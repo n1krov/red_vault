@@ -1,0 +1,199 @@
+{
+  "main": {
+    "id": "3625546b55eb7809",
+    "type": "split",
+    "children": [
+      {
+        "id": "50e27cbc4535da03",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "34fc679f4e7e6d6d",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Herramientas/herramientas.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "herramientas"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "7c7f5519d34cd457",
+    "type": "split",
+    "children": [
+      {
+        "id": "502756da42f28f3d",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "a4d5ab59218d1ad5",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Explorador de archivos"
+            }
+          },
+          {
+            "id": "cc092ad900e85d30",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Buscar"
+            }
+          },
+          {
+            "id": "93b314c94243d36b",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Marcadores"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "d26a82273a0098a7",
+    "type": "split",
+    "children": [
+      {
+        "id": "c0fcd5cffcad3c96",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "50e912ab60edf4ce",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "apuntes/Enumeracion y Explotacion/Foward Shell.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Enlaces entrantes de Foward Shell"
+            }
+          },
+          {
+            "id": "f1b88e154f9b30bb",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "apuntes/Enumeracion y Explotacion/Foward Shell.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Enlaces salientes de Foward Shell"
+            }
+          },
+          {
+            "id": "9d18ebc16e9d2e55",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              },
+              "icon": "lucide-tags",
+              "title": "Etiquetas"
+            }
+          },
+          {
+            "id": "34065dbb4fd31731",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "apuntes/Enumeracion y Explotacion/Foward Shell.md"
+              },
+              "icon": "lucide-list",
+              "title": "Esquema de Foward Shell"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Abrir selector rápido": false,
+      "graph:Abrir vista gráfica": false,
+      "canvas:Crear nuevo lienzo": false,
+      "daily-notes:Abrir la nota de hoy": false,
+      "templates:Insertar plantilla": false,
+      "command-palette:Abrir paleta de comandos": false
+    }
+  },
+  "active": "34fc679f4e7e6d6d",
+  "lastOpenFiles": [
+    "Herramientas/sqlmap.md",
+    "Herramientas/herramientas.md",
+    "Herramientas/SecList.md",
+    "apuntes/Enumeracion y Explotacion/Explotacion.md",
+    "Basurero.md",
+    "apuntes/Indice.md",
+    "Herramientas/droopescan.md",
+    "Herramientas/cmseek.md",
+    "Herramientas/whatweb.md",
+    "Herramientas/cmsmap.md",
+    "Herramientas/builtwith.md",
+    "Herramientas/arachni.md",
+    "Herramientas/wpscan.md",
+    "apuntes/bash/bash.md",
+    "1_overthewire/overthewire.md",
+    "apuntes/2_reconocimiento/modeloOSI.md",
+    "apuntes/2_reconocimiento/Reconocimiento.md",
+    "4-enumeracion/README.md",
+    "apuntes/Enumeracion y Explotacion/Enumeracion y Explotacion.md",
+    "apuntes/Enumeracion y Explotacion/Payload.md",
+    "apuntes/Enumeracion y Explotacion/Foward Shell.md",
+    "5-explotacion_y_enumeracion/Dockerfile~",
+    "5-explotacion_y_enumeracion/Dockerfile",
+    "5-explotacion_y_enumeracion",
+    "apuntes/Enumeracion y Explotacion/Reverse Shell.md",
+    "apuntes/Enumeracion y Explotacion/Bind Shell.md",
+    "apuntes/bash/subnetting.md",
+    "Herramientas/nmap.md",
+    "Herramientas/ctfr.md",
+    "Herramientas",
+    "apuntes/Enumeracion y Explotacion"
+  ]
+}
