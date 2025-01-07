@@ -6,6 +6,7 @@
 [[nmap]]
 [[netcat]]
 
+
 [[SecList]]
 
 
@@ -31,6 +32,15 @@ Estas herramientas te permiten empezar desde un reconocimiento superficial hasta
 
 
 ---
+
+### Enumeracion maquinas Linux
+
+[[lse]]
+[[lilenum]]
+
+
+---
+
 
 ## OWASP top 10
 
