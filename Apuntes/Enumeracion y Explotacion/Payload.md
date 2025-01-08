@@ -82,3 +82,6 @@ Un **non-staged payload** se envía completamente de una sola vez.
 
 - **Staged**: Divide el payload en partes para mayor discreción.
 - **Non-Staged**: Lo entrega todo de una vez para simplicidad y rapidez.
+
+---
+[[glosario]]

@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<methodCall> 
-<methodName>wp.getUsersBlogs</methodName> 
-<params> 
-<param><value>\{\{your username\}\}</value></param> 
-<param><value>\{\{your password\}\}</value></param> 
-</params> 
-</methodCall>

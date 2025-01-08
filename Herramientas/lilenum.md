@@ -2,6 +2,6 @@
 ---
 [[Enumeracion y Explotacion]]
 
-[[Reconocimiento]]
+[[reconocimiento]]
 
 ---

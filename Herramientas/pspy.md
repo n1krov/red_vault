@@ -1,6 +1,6 @@
 
 ---
-[[Reconocimiento]]
+[[reconocimiento]]
 
 
 ---

@@ -1,7 +1,7 @@
 
 ---
 # Conceptos
-[[modeloOSI]]
+[[ModeloOSI]]
 [[subnetting]]
 
 
