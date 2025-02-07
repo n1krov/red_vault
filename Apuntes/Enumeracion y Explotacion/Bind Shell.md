@@ -9,3 +9,5 @@ En una **bind shell**, la máquina objetivo abre un puerto específico y espera 
 - **Iniciador de la conexión:** Atacante.
 - **Dirección de la conexión:** Desde el atacante hacia la víctima.
 - **Desventaja principal:** Susceptible a ser bloqueada por firewalls que filtran conexiones entrantes.
+
+[[Enumeracion y Explotacion]]

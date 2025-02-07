@@ -96,3 +96,5 @@ exploit
 - La explotación manual es para casos específicos donde el detalle importa.
 - La automatización es ideal para escaneos masivos o pruebas rápidas.  
     Aprender ambos enfoques te hace más versátil, ya sea para pruebas de penetración **(Ethical Hacking)** o para defender sistemas. 🚀
+
+[[Enumeracion y Explotacion]]

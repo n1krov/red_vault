@@ -10,3 +10,5 @@ El término **forward shell** se refiere a una conexión estándar donde el clie
 - **Iniciador de la conexión:** Cliente (usuario legítimo).
 - **Dirección de la conexión:** Desde el cliente hacia el servidor.
 - **Uso común:** Acceso legítimo a sistemas remotos, como en conexiones SSH.
+
+[[Enumeracion y Explotacion]]
