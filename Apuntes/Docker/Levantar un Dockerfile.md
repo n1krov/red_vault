@@ -110,3 +110,5 @@ Si tu aplicación necesita exponer un puerto o acceder a archivos en tu sistema,
 
 ### 5. Verificar que la aplicación esté funcionando
 Si todo está configurado correctamente, deberías ver la salida de tu aplicación (`CSTI.py`) en la terminal. Si la aplicación es un servidor web, abre tu navegador y visita `http://localhost:5000` (o el puerto que hayas expuesto).
+
+[[docker]]
