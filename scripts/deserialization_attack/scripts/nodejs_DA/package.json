@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "cookie-parser": "^1.4.7",
+    "express": "^4.21.2",
+    "node-serialize": "^0.0.4"
+  }
+}

@@ -1,0 +1,5 @@
+# Nmap 7.94SVN scan initiated Tue Feb 18 17:32:55 2025 as: nmap -p- --open -sS --min-rate 5000 -vvv -n -Pn -oG allPorts 192.168.1.17
+# Ports scanned: TCP(65535;1-65535) UDP(0;) SCTP(0;) PROTOCOLS(0;)
+Host: 192.168.1.17 ()	Status: Up
+Host: 192.168.1.17 ()	Ports: 21/open/tcp//ftp///, 22/open/tcp//ssh///, 80/open/tcp//http///, 139/open/tcp//netbios-ssn///, 445/open/tcp//microsoft-ds///, 3306/open/tcp//mysql///, 11111/open/tcp//vce///, 22222/open/tcp//easyengine///, 22223/open/tcp/////, 33333/open/tcp//dgi-serv///, 33334/open/tcp//speedtrace///, 44441/open/tcp/////, 44444/open/tcp//cognex-dataman///, 55551/open/tcp/////, 55555/open/tcp/////	Ignored State: closed (65520)
+# Nmap done at Tue Feb 18 17:32:57 2025 -- 1 IP address (1 host up) scanned in 2.05 seconds

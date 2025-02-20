@@ -1,0 +1,70 @@
+# Nmap 7.94SVN scan initiated Tue Feb 18 17:39:28 2025 as: nmap -sC -sV -p21,22,80,139,445,3306,11111,22222,22223,33333,33334,44441,44444,55551,55555 -oN targeted 192.168.1.17
+Fetchfile found /usr/bin/../share/nmap/nmap-rpc
+Nmap scan report for 192.168.1.17 (192.168.1.17)
+Host is up (0.00041s latency).
+Scanned at 2025-02-18 17:39:28 -03 for 46s
+
+PORT      STATE SERVICE    VERSION
+21/tcp    open  ftp        vsftpd 3.0.3
+| ssl-date: 
+|_  ERROR: Unable to obtain data from the target
+| ftp-syst: 
+|   STAT: 
+| FTP server status:
+|      Connected to ::ffff:192.168.1.10
+|      Logged in as ftp
+|      TYPE: ASCII
+|      No session bandwidth limit
+|      Session timeout in seconds is 300
+|      Control connection is plain text
+|      Data connections will be plain text
+|      At session startup, client count was 2
+|      vsFTPd 3.0.3 - secure, fast, stable
+|_End of status
+| ftp-anon: Anonymous FTP login allowed (FTP code 230)
+|_drwxr-xr-x    2 0        0               6 Apr 12  2021 pub
+22/tcp    open  ssh        OpenSSH 8.0 (protocol 2.0)
+| ssh-hostkey: 
+|   3072 00:24:2b:ae:41:ba:ac:52:d1:5d:4f:ad:00:ce:39:67 (RSA)
+|   256 1a:e3:c7:37:52:2e:dc:dd:62:61:03:27:55:1a:86:6f (ECDSA)
+|_  256 24:fd:e7:80:89:c5:57:fd:f3:e5:c9:2f:01:e1:6b:30 (ED25519)
+80/tcp    open  http       Apache httpd 2.4.37 (())
+|_http-title: Apache HTTP Server Test Page powered by: Rocky Linux
+|_http-server-header: Apache/2.4.37 ()
+| http-methods: 
+|_  Potentially risky methods: TRACE
+139/tcp   open  tcpwrapped
+445/tcp   open  tcpwrapped
+3306/tcp  open  mysql?
+| fingerprint-strings: 
+|   NULL: 
+|_    Host '192.168.1.10' is not allowed to connect to this MariaDB server
+| ssl-date: 
+|_  ERROR: Unable to obtain data from the target
+11111/tcp open  tcpwrapped
+22222/tcp open  tcpwrapped
+|_ssh-hostkey: ERROR: Script execution failed (use -d to debug)
+22223/tcp open  tcpwrapped
+33333/tcp open  tcpwrapped
+33334/tcp open  tcpwrapped
+44441/tcp open  http       Apache httpd 2.4.37 (())
+| http-methods: 
+|_  Potentially risky methods: TRACE
+|_http-server-header: Apache/2.4.37 ()
+|_http-title: Site doesn't have a title (text/html; charset=UTF-8).
+44444/tcp open  tcpwrapped
+55551/tcp open  tcpwrapped
+55555/tcp open  tcpwrapped
+1 service unrecognized despite returning data. If you know the service/version, please submit the following fingerprint at https://nmap.org/cgi-bin/submit.cgi?new-service :
+SF-Port3306-TCP:V=7.94SVN%I=7%D=2/18%Time=67B4F000%P=x86_64-pc-linux-gnu%r
+SF:(NULL,4B,"G\0\0\x01\xffj\x04Host\x20'192\.168\.1\.10'\x20is\x20not\x20a
+SF:llowed\x20to\x20connect\x20to\x20this\x20MariaDB\x20server");
+MAC Address: 08:00:27:DB:76:67 (Oracle VirtualBox virtual NIC)
+Service Info: OS: Unix
+
+Host script results:
+|_smb2-time: Protocol negotiation failed (SMB2)
+
+Read from /usr/bin/../share/nmap: nmap-mac-prefixes nmap-protocols nmap-service-probes nmap-services.
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+# Nmap done at Tue Feb 18 17:40:14 2025 -- 1 IP address (1 host up) scanned in 45.74 seconds
