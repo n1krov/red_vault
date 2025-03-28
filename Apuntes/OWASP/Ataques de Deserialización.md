@@ -8,7 +8,7 @@ La **serialización** es el proceso de convertir un objeto (en memoria) en un fo
 ### **¿Qué es un Ataque de Deserialización?**
 
 Es un tipo de ataque en el que un atacante **manipula datos serializados** para que, al ser deserializados, ejecuten código malicioso o alteren el comportamiento de la aplicación.
-
+ 
 ---
 
 ### **¿Cómo funciona?**
