@@ -150,7 +150,14 @@ v- `name()` retorna el nombre de la etiqueta dependiendo de la sintaxis con `/*`
 
 > de `substring()` -> el primer 1 es el iterable para el script, y bueno la C es el segundo que vamos a iterar
 
-Tambien si en `substring()` conoces el nombre de la etiqueta puedes usarlo, suponiendo que conoces la tag llamada `<Coffee>`
+
+## Contenido de una tag
+
+**Debes conocer el nombre de la tag**
+
+Tambien si en `substring()` conoces el nombre de la etiqueta puedes enumerar su contenido.
+
+Supongamos que conoces la tag llamada `<Coffee>`
 
 ```
 1' and substring(Coffee,1,1)='C
