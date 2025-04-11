@@ -88,19 +88,20 @@ sequenceDiagram
 
 ---
 
-# Practica
-
-## Enumeracion de Etiquetas
+# Practica - Enumeracion de Etiquetas
 
 ## Etiquetas raiz primaria
 
 Seria aquiella etiqueta que englobe a las demas. Para eso puedes efectuar esta query 
+
 > Suponiendo que el input encierra la query entre **'   '**
+
 
 ```xpath
 1' and count(/*)='1
 ```
-aquí le dices que  el valor del input es 1 y que la etiqueta raíz primaria es solo una, por ejemplo:
+
+Aquí le dices que  el valor del input es 1 y que la etiqueta raíz primaria es solo una, por ejemplo:
 
 ```xml
 <Coffees>
@@ -124,11 +125,18 @@ aquí le dices que  el valor del input es 1 y que la etiqueta raíz primaria es 
 </Coffees>
 ```
 
+> Nota que para posicionarte en cada etiqueta recorres de las padres a las hijas.
 
+#### Seleccion de Etiquetas
+XML la estructura se maneja por tags que van contenidas dentro de otras, generalmente.
+
+- `/*` representa la etiqueta padre, como hay una sola tambien se puede escribir `/[1]` porque ahi seleccionas la primera
+- `/[1]/*` eso quiere decir de la primera etiqueta padre selecciona todas las hijas. (serian todas las `<Coffee>`'s tags)
+- - `/[1]/[2]` eso quiere decir de la primera etiqueta padre selecciona todas las hijas. (seria solo `<Coffee ID="2">`)
 
 La eiqueta raiz primaria seria solo una, por lo tanto la query seria verdadera.
 
-### Nombre de la etiqueta
+## Nombre de la etiqueta
 
 como no sabemos el nombre completo debido a la cantidad descomunal de posibilidades que puede tener se puede jugar con validaciones de caracter por caracter, es decir, podriamos evaular si por ejemplo **la primera letra de la etiqueta es igual a "C"** en este caso. Despues se armara un script para evaluar cada posicion y asi obtener el nombre mucho mas rapido
 
@@ -136,45 +144,41 @@ como no sabemos el nombre completo debido a la cantidad descomunal de posibilida
 1' and substring(name(/*[1]),1,1)='C
 ```
 
-- `name` es para ver el nombre de la etiqueta especificada.
+v- `name()` retorna el nombre de la etiqueta dependiendo de la sintaxis con `/*` que le pases.
 - La sintaxis `/*[1]` -> hace referencia al numero de etiqueta, en este caso la etiqueta 1.
+- `substring()` utilizamos para poder luego recorrer caracter a caracter una etiqueta
 
-> de `substrings` -> el primer 1 es el iterable para el script, y bueno la C es el segundo que vamos a iterar
+> de `substring()` -> el primer 1 es el iterable para el script, y bueno la C es el segundo que vamos a iterar
 
-### Longitud de una etiqueta
+Tambien si en `substring()` conoces el nombre de la etiqueta puedes usarlo, suponiendo que conoces la tag llamada `<Coffee>`
+
+```
+1' and substring(Coffee,1,1)='C
+```
+
+## Longitud de una etiqueta
+
 ```xml
 1' and string-length(name(/*[1])) > '{longitud}
 ```
 
-## Descubrimiento Etiquetas hijas
+- Se usa `string-length()` para ver la longitud del nombre de la eitqueta XML
 
-### Cantidad de etiquetas hijas
+
+## Etiquetas hijas
+
+#### Cantidad de etiquetas hijas
 - Para saber la cantidad de etiquetas hijas que tiene la etiqueta primaria, se puede usar el siguiente script:
 
 ```XML
 1' and count(/*[1]/*) > '{cantidad}
 ```
 
+- `count()` te da la cantidad de etiquetas contenidas. *Si fuese la raiz seria solo una*.
+
 > tambien puedes usar el `=` para saber si es igual a una cantidad especifica
 
----
 
-### **Ejemplo Práctico**
-
-- **Escenario**: Una aplicación web usa XPath para autenticar usuarios.
-- **Código Vulnerable**:
-  ```xpath
-  //user[username='$username' and password='$password']
-  ```
-- **Ataque**:  
-  El atacante ingresa:
-  - **Usuario**: `admin`
-  - **Contraseña**: `' or '1'='1`
-  - La consulta resultante:
-    ```xpath
-    //user[username='admin' and password='' or '1'='1']
-    ```
-  - Esto devuelve todos los usuarios, permitiendo al atacante eludir la autenticación.
 
 ---
 
