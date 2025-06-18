@@ -1,7 +1,6 @@
 
-### **NAT (Network Address Translation)**
+## **¿Qué es?**  
 
-**¿Qué es?**  
 NAT (Traducción de Direcciones de Red) es una tecnología que permite que varios dispositivos en una red privada compartan una única dirección IP pública para conectarse a Internet.
 
 **¿Cómo funciona?**

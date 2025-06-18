@@ -81,4 +81,4 @@ sequenceDiagram
 
 Si alguna vez tienes problemas de conexión, reinicia tu router o verifica que el servidor DHCP esté funcionando correctamente. ¡Es el "asistente" que mantiene tu red en orden!
 
-[[glosario]]
+[[glosario]] [[protocolos]]

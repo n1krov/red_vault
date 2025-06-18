@@ -120,4 +120,4 @@ graph TD
 
 LDAP es una herramienta poderosa para gestionar directorios, pero debe configurarse y protegerse adecuadamente para evitar vulnerabilidades. ¡Esencial en redes empresariales! 😊
 
-[[glosario]]
+[[glosario]] [[protocolos]]

@@ -5,7 +5,7 @@ El modelo OSI (Open System Interconnection) es un modelo de referencia que descr
 
 Las capas del modelo OSI son:
 
-1. **Capa física (Physical Layer):** Esta capa se encarga de la transmisión de datos a través de medios físicos como cables y ondas de radio. La capa física define las características eléctricas, mecánicas y funcionales de los dispositivos de red.
+1. **Capa física (Physical Layer):** Esta capa se encarga de la **transmisión de datos a través de medios físicos** como cables y ondas de radio. La capa física define las características eléctricas, mecánicas y funcionales de los dispositivos de red.
 2. **Capa de enlace de datos (Data Link Layer):** Esta capa se encarga de la transmisión de datos entre dispositivos adyacentes en una red local. La capa de enlace de datos define cómo se establecen, mantienen y terminan las conexiones entre dispositivos.
 3. **Capa de red (Network Layer):** Esta capa se encarga de la transmisión de datos entre dispositivos en redes diferentes. La capa de red define cómo se enrutan los datos a través de la red y cómo se establecen las conexiones entre redes.
 4. **Capa de transporte (Transport Layer):** Esta capa se encarga de la transmisión de datos entre aplicaciones en dispositivos finales. La capa de transporte define cómo se establecen y mantienen las conexiones entre aplicaciones y cómo se garantiza la entrega de los datos. Aqui se encuentran los protocolos TCP y UDP.
