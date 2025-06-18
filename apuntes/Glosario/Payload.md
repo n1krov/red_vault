@@ -3,6 +3,8 @@
 
 Un **payload** es el "contenido" o "carga útil" que un atacante envía para realizar una acción maliciosa. Es la parte del ataque que ejecuta una tarea específica, como robar información, instalar malware o abrir una puerta trasera en el sistema.
 
+Un **payload** es el código que se ejecuta en el sistema víctima _una vez_ que se explota la vulnerabilidad. Es lo que te da control o acceso.
+
 ### Ejemplo sencillo:
 
 1. Imagina que un atacante quiere robar datos de una computadora.
