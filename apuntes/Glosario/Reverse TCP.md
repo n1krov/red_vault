@@ -8,3 +8,8 @@ Porque la mayoría de los firewalls **bloquean conexiones entrantes**, pero **pe
     
 3. Ahí recibís una sesión de `meterpreter`.
     
+
+
+
+---
+[[glosario]]

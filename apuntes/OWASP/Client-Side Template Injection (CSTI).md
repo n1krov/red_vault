@@ -80,3 +80,5 @@ sequenceDiagram
 ### **Consejo Final**
 
 Implementa medidas de seguridad como la validación de entradas y el escape de datos para proteger tus aplicaciones contra ataques CSTI.
+
+[[OWASP]]
