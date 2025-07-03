@@ -63,6 +63,41 @@ wget -r -np -nH --cut-dirs=0 --reject-regex 'venv/' http://192.168.0.5:8000/
 
 
 ---
+## Traer Directorios de una URL
+
+Si un servidor HTTP está **exponiendo sus directorios** (típico índice de Apache o Nginx con _directory listing_ habilitado), podés **descargar todo el contenido del directorio** de varias maneras.
+### 🔹 Opción 1: `wget` con recursividad
+
+```bash
+wget -r -np -nH --cut-dirs=1 -R "index.html*" http://servidor.com/directorio/
+```
+
+#### 🔍 Explicación de flags:
+
+- `-r`: descarga recursiva.
+    
+- `-np`: no seguir enlaces hacia directorios superiores.
+    
+- `-nH`: no guardar con el nombre del host.
+    
+- `--cut-dirs=1`: elimina un nivel de directorio al guardar localmente.
+    
+- `-R "index.html*"`: evita guardar los archivos `index.html` generados por el servidor.
+    
+
+---
+
+### 🔹 Opción 2: `wget` plano (si no hay subdirectorios)
+
+```bash
+wget -r -l1 -A "*" http://servidor.com/directorio/
+```
+
+- `-l1`: solo un nivel de profundidad.
+    
+- `-A "*"`: acepta todos los archivos.
+    
+---
 
 ## 🔸 Descarga recursiva
 

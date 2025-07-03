@@ -41,6 +41,24 @@ nmap -sC -sV -p <puertos> <IP> -oN targeted
 
 > 📝 También podés combinar los flags `-sC -sV` como `-sCV` para simplificar el comando.
 
+#### Escaneo de puerto http 80
+
+```sh
+nmap -p80 --script=http-enum,http-title,http-headers,http-methods,http-robots.txt,http-server-header _ip_
+```
+
+### Escaneo de versiones de puertos
+
+```sh
+nmap -sV --version-all -p _puertos_ _IP_
+```
+
+##### De modo agresivo
+
+```sh
+nmap -A -p _puertos_ _IP_ 
+```
+
 ---
 
 [[reconocimiento]]
