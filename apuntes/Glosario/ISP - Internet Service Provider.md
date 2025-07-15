@@ -124,3 +124,7 @@ sequenceDiagram
 |**Router del ISP**|Equipo que conecta tu red local al ISP|
 |**NAT**|Traducción de IPs privadas a públicas|
 |**Wi-Fi local**|Comunicación dentro de tu casa, invisible desde fuera|
+
+---
+
+[[glosario]]

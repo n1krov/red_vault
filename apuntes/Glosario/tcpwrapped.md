@@ -52,3 +52,6 @@ openssl s_client -connect mail.servidor.com:995
 ```bash
 nmap -p 995 -sV --script ssl-cert,ssl-enum-ciphers mail.servidor.com
 ```
+
+
+[[glosario]]

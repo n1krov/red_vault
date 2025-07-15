@@ -6,6 +6,9 @@ Adquirir conocimientos teóricos y prácticos sobre redes Wi-Fi, sus vulnerabili
 ---
 
 ## 🧩 Módulo 1: Fundamentos de Redes Inalámbricas
+
+[[modulo 1]]
+
 🔹 Objetivo: comprender cómo funciona una red Wi-Fi a bajo nivel.
 
 - [ ] ¿Qué es una red Wi-Fi? IEEE 802.11
