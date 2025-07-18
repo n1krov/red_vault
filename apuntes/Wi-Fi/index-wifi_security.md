@@ -11,9 +11,9 @@ Adquirir conocimientos teóricos y prácticos sobre redes Wi-Fi, sus vulnerabili
 
 🔹 Objetivo: comprender cómo funciona una red Wi-Fi a bajo nivel.
 
-- [ ] ¿Qué es una red Wi-Fi? IEEE 802.11
-- [ ] Frecuencias: 2.4 GHz vs 5 GHz
-- [ ] Canales y solapamiento
+- [ ] [[¿Qué es una red Wi-Fi? IEEE 802.11]]
+- [ ] [[Frecuencias - 2.4 GHz vs 5 GHz]]
+- [ ] [[Canales y solapamiento]]
 - [ ] Modos de funcionamiento: Infrastructure vs Ad-Hoc
 - [ ] Tipos de paquetes: beacon, probe, auth, data
 - [ ] MAC Address, BSSID, SSID
