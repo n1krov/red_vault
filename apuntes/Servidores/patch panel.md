@@ -47,3 +47,6 @@ Visualmente, una patchera parece una **regla negra horizontal con muchos puertos
 ### 📎 Tip extra:
 
 En datacenters grandes también existen **patcheras de fibra óptica**, que cumplen el mismo propósito, pero con conectores **LC, SC, ST** en lugar de RJ45.
+
+
+[[fundamento de servidores]]

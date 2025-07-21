@@ -63,3 +63,4 @@ Imaginá una **estantería metálica alta**, como una biblioteca, donde en vez d
 - **Escalabilidad**: Podés agregar más servidores sin reorganizar toda la sala.
     
 
+[[fundamento de servidores]]

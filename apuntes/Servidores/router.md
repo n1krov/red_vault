@@ -82,3 +82,6 @@ En redes grandes también se usa una jerarquía:
 |**Switch**|Conecta dispositivos dentro de una misma red|
 |**Firewall**|Filtra tráfico según reglas|
 |**Modem**|Convierte señal analógica ↔ digital|
+
+
+[[fundamento de servidores]]

@@ -77,3 +77,5 @@ Una aplicación web con miles de visitas por segundo no puede depender de un sol
 - [Kubernetes Docs](https://kubernetes.io/docs/home/)
 - [Pacemaker](https://clusterlabs.org/pacemaker/)
 - [Ceph](https://docs.ceph.com/en/latest/)
+
+[[fundamento de servidores]]
