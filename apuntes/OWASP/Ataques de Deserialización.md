@@ -1,4 +1,6 @@
 
+> Se recomienda ver [[Serializacion y Deserializacion]]
+
 ### **¿Qué es la Deserialización?**
 
 La **serialización** es el proceso de convertir un objeto (en memoria) en un formato que puede ser almacenado o transmitido, como JSON, XML o binario. La **deserialización** es el proceso inverso: convertir esos datos de vuelta a un objeto.
