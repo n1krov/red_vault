@@ -39,9 +39,14 @@ Vamos a desglosar el comando paso a paso para entender qué hace cada parte:
    - En resumen, esta parte envía la salida de la shell (lo que se escribe en la terminal) a través de la red hacia el atacante.
 
 4. **`0>&1`**:
-   - Esto redirige la entrada estándar (`stdin`) de la shell para que provenga de la misma conexión TCP.
+   - Esto lo que hace es redirigir la entrada estándar (`stdin`) de la shell hacia la misma conexión TCP.
    - En otras palabras, cualquier dato que el atacante envíe a través de la conexión TCP será tratado como entrada para la shell en la máquina víctima.
    - Esto permite que el atacante interactúe con la shell remota como si estuviera directamente en la máquina víctima.
+
+> Recordar que 
+- 0 es `stdin`
+- 1 es `stdout` 
+- 2 es `stderr`.
 
 ---
 
