@@ -8,4 +8,4 @@
 7. [[fundamento de servidores]]
 8. [[criptografia_seguridad en redes]]
 9. [[OWASP]]
-10. [[edp]]
+10. [[Escalada de Privilegios]]
