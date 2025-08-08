@@ -9,7 +9,25 @@ Sudo (SuperUser DO) es un programa diseñado para sistemas Unix/Linux que permit
 
 Los privilegios de sudo se configuran en el archivo `/etc/sudoers` o en archivos dentro del directorio `/etc/sudoers.d/`. Esta configuración determina quién puede usar sudo y qué comandos pueden ejecutar.
 
+### Sintaxis Básica del Archivo Sudoers
+
+```bash
+usuario ALL=(ALL) NOPASSWD: comando
+```
+
+Donde:
+- `usuario`: El nombre del usuario que tiene permisos.
+- `ALL`: El host en el que se aplica la regla (normalmente `ALL`).
+- `(ALL)`: El usuario al que se cambiará (normalmente `ALL` para root).
+- `NOPASSWD:`: Indica que no se requiere contraseña para ejecutar el comando.
+- `comando`: El comando específico que el usuario puede ejecutar.
+
+```bash
+usuario ALL=(root) NOPASSWD: /usr/bin/apt-get
+```
+
 ## Posibles Vectores de Abuso
+
 
 ### 1. Ejecución de Comandos Específicos
 
