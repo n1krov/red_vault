@@ -168,4 +168,4 @@ graph TD
 
 `grep` es una herramienta poderosa para buscar y filtrar texto. Combínalo con otros comandos como `awk`, `sed` o `tr` para tareas más complejas.
 
-[[bash]]
+[[unix]]

@@ -165,4 +165,4 @@ graph TD
 
 `awk` es una herramienta poderosa para procesar texto. Combínalo con otros comandos como `grep`, `sed` o `tr` para tareas más complejas.
 
-[[bash]]
+[[unix]]

@@ -165,4 +165,4 @@ graph TD
 
 `tr` es una herramienta sencilla pero poderosa para manipular texto en la terminal. Combínalo con otros comandos como `grep`, `sed` o `awk` para tareas más complejas.
 
-[[bash]]
+[[unix]]

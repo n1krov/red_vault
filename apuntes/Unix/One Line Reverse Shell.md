@@ -50,6 +50,6 @@ Vamos a desglosar el comando paso a paso para entender qué hace cada parte:
 
 ---
 
-[[bash]]
+[[unix]]
 [[stder_stdout]]
 [[Reverse Shell]]

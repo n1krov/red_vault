@@ -161,4 +161,4 @@ graph TD
 
 `sed` es una herramienta poderosa para manipular texto. Combínalo con otros comandos como `grep`, `awk` o `tr` para tareas más complejas.
 
-[[bash]]
+[[unix]]
