@@ -81,13 +81,13 @@ GraphQL es un lenguaje de consulta para APIs que permite a los clientes solicita
 http://localhost:5000/graphql?query=fragment%20FullType%20on%20Type%20{+%20%20kind+%20%20name+%20%20description+%20%20fields%20{+%20%20%20%20name+%20%20%20%20description+%20%20%20%20args%20{+%20%20%20%20%20%20...InputValue+%20%20%20%20}+%20%20%20%20type%20{+%20%20%20%20%20%20...TypeRef+%20%20%20%20}+%20%20}+%20%20inputFields%20{+%20%20%20%20...InputValue+%20%20}+%20%20interfaces%20{+%20%20%20%20...TypeRef+%20%20}+%20%20enumValues%20{+%20%20%20%20name+%20%20%20%20description+%20%20}+%20%20possibleTypes%20{+%20%20%20%20...TypeRef+%20%20}+}++fragment%20InputValue%20on%20InputValue%20{+%20%20name+%20%20description+%20%20type%20{+%20%20%20%20...TypeRef+%20%20}+%20%20defaultValue+}++fragment%20TypeRef%20on%20Type%20{+%20%20kind+%20%20name+%20%20ofType%20{+%20%20%20%20kind+%20%20%20%20name+%20%20%20%20ofType%20{+%20%20%20%20%20%20kind+%20%20%20%20%20%20name+%20%20%20%20%20%20ofType%20{+%20%20%20%20%20%20%20%20kind+%20%20%20%20%20%20%20%20name+%20%20%20%20%20%20%20%20ofType%20{+%20%20%20%20%20%20%20%20%20%20kind+%20%20%20%20%20%20%20%20%20%20name+%20%20%20%20%20%20%20%20%20%20ofType%20{+%20%20%20%20%20%20%20%20%20%20%20%20kind+%20%20%20%20%20%20%20%20%20%20%20%20name+%20%20%20%20%20%20%20%20%20%20%20%20ofType%20{+%20%20%20%20%20%20%20%20%20%20%20%20%20%20kind+%20%20%20%20%20%20%20%20%20%20%20%20%20%20name+%20%20%20%20%20%20%20%20%20%20%20%20%20%20ofType%20{+%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20kind+%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20name+%20%20%20%20%20%20%20%20%20%20%20%20%20%20}+%20%20%20%20%20%20%20%20%20%20%20%20}+%20%20%20%20%20%20%20%20%20%20}+%20%20%20%20%20%20%20%20}+%20%20%20%20%20%20}+%20%20%20%20}+%20%20}+}++query%20IntrospectionQuery%20{+%20%20schema%20{+%20%20%20%20queryType%20{+%20%20%20%20%20%20name+%20%20%20%20}+%20%20%20%20mutationType%20{+%20%20%20%20%20%20name+%20%20%20%20}+%20%20%20%20types%20{+%20%20%20%20%20%20...FullType+%20%20%20%20}+%20%20%20%20directives%20{+%20%20%20%20%20%20name+%20%20%20%20%20%20description+%20%20%20%20%20%20locations+%20%20%20%20%20%20args%20{+%20%20%20%20%20%20%20%20...InputValue+%20%20%20%20%20%20}+%20%20%20%20}+%20%20}+}
 ```
 
-   y nos devolvera un json con todos los tipos y campos disponibles en el esquema GraphQL. y ese resultado lo pasamos a [[GraphQL Voyager]] para visualizarlo mejor.
+   y nos devolvera un json con todos los tipos y campos disponibles en el esquema GraphQL. y ese resultado lo pasamos a [[GRaphQL Voyager]] para visualizarlo mejor.
 
    > si sale error, a lo que tenga por ejemplo Type, ponerle __`__Type` y a lo que tenga por ejemplo InputValue ponerle `__InputValue` y asi sucesivamente con los tipos que salgan en el json.
 
-   Esto es muy comodo porque al llevarlo al [[GraphQL Voyager]] podemos ver los tipos y campos de una manera visual y asi podemos ver que tipo de consultas podemos hacer.
+   Esto es muy comodo porque al llevarlo al [[GRaphQL Voyager]] podemos ver los tipos y campos de una manera visual y asi podemos ver que tipo de consultas podemos hacer.
    
-   URL larga con introspection query → Importar a [[GraphQL Voyager]]  
+   URL larga con introspection query → Importar a [[GRaphQL Voyager]]  
    
    ![[Pasted image 20250728000052.png]]
 
@@ -124,7 +124,7 @@ http://localhost:5000/graphql?query=fragment%20FullType%20on%20Type%20{+%20%20ki
 
 ## 🔗 Recursos Recomendados
 - [[BurpSuite]] para interceptar peticiones
-- [[Gobuster]] para fuzzear rutas
-- [[GraphQL Voyager]] para visualización
+- [[gobuster]] para fuzzear rutas
+- [[GRaphQL Voyager]] para visualización
 - [[Hack Tricks]] GraphQL: [enlace](https://book.hacktricks.xyz/en/network-services-pentesting/pentesting-web/graphql)
 - [[OWASP]]

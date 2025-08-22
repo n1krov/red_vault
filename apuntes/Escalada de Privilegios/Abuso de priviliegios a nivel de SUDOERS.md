@@ -1,11 +1,53 @@
+---
+aliases:
+  - SuperUser DO
+  - Privilegios sudo
+tags:
+  - linux
+  - seguridad
+  - privilegios
+  - escalada
+  - root
+created: 2023-08-15
+modified: 2023-08-15
+Tema: "[[Escalada de Privilegios]]"
+---
 
-## ¿Qué es Sudo?
+# 🛡️ Sudo: Análisis y Abuso de Privilegios
 
-Sudo (SuperUser DO) es un programa diseñado para sistemas Unix/Linux que permite a los usuarios ejecutar programas con los privilegios de seguridad de otro usuario, normalmente el superusuario (root).
 
-## Configuración de Sudo
+> "Con gran poder viene gran responsabilidad... y posibilidades de explotación"
+
+## 📋 Índice
+
+- [[#¿Qué es Sudo?]]
+- [[#Configuración de Sudo]]
+- [[#Posibles Vectores de Abuso]]
+- [[#Cómo Detectar y Prevenir estos Abusos]]
+- [[#Comandos Útiles para Verificación]]
+- [[#Ejemplo Práctico de Escalada de Privilegios]]
+- [[#Referencias y Recursos]]
+
+## 🔍 ¿Qué es Sudo?
+
+> [!info] Definición
+> **Sudo** (SuperUser DO) es un programa diseñado para sistemas Unix/Linux que permite a los usuarios ejecutar programas con los privilegios de seguridad de otro usuario, normalmente el superusuario (root).
+
+```mermaid
+graph LR
+    A[Usuario Normal] -->|sudo comando| B[Verificación de Permisos]
+    B -->|Autorizado| C[Ejecución con Privilegios Elevados]
+    B -->|Denegado| D[Acceso Rechazado]
+    style C fill:#a5d6a7,stroke:#81c784
+    style D fill:#ef9a9a,stroke:#e57373
+```
+
+## ⚙️ Configuración de Sudo
 
 Los privilegios de sudo se configuran en el archivo `/etc/sudoers` o en archivos dentro del directorio `/etc/sudoers.d/`. Esta configuración determina quién puede usar sudo y qué comandos pueden ejecutar.
+
+> [!warning] Advertencia
+> Nunca edites directamente el archivo sudoers. Utiliza siempre el comando `visudo` para evitar corromper el archivo.
 
 ### Sintaxis Básica del Archivo Sudoers
 
@@ -14,26 +56,32 @@ usuario ALL=(ALL) NOPASSWD: comando
 ```
 
 Donde:
-- `usuario`: El nombre del usuario que tiene permisos.
-- `ALL`: El host en el que se aplica la regla (normalmente `ALL`).
-- `(ALL)`: El usuario al que se cambiará (normalmente `ALL` para root).
-- `NOPASSWD:`: Indica que no se requiere contraseña para ejecutar el comando.
-- `comando`: El comando específico que el usuario puede ejecutar.
 
+| Componente | Descripción |
+|------------|-------------|
+| `usuario`  | Nombre del usuario con permisos |
+| `ALL` (primer) | Host en el que se aplica la regla |
+| `(ALL)` | Usuario al que se cambiará (generalmente root) |
+| `NOPASSWD:` | Indica que no se requiere contraseña |
+| `comando` | Comando específico que puede ejecutar |
+
+**Ejemplo:**
 ```bash
 usuario ALL=(root) NOPASSWD: /usr/bin/apt-get
 ```
 
-## Posibles Vectores de Abuso
+## 🔓 Posibles Vectores de Abuso
 
-> Se usa mucho [[GTFOBins]]
+> [!tip]
+> Para encontrar binarios explotables, consulta siempre [[GTFOBins]] - una extensa biblioteca de técnicas de abuso para binarios comunes.
+
 ### 1. Ejecución de Comandos Específicos
 
-**Ejemplo:** Supongamos que un usuario tiene permiso para ejecutar un comando específico como root:
-
-```
-usuario ALL=(ALL) NOPASSWD: /usr/bin/find
-```
+> [!example] Escenario
+> Supongamos que un usuario tiene permiso para ejecutar un comando específico como root:
+> ```
+> usuario ALL=(ALL) NOPASSWD: /usr/bin/find
+> ```
 
 **Abuso:**
 ```bash
@@ -45,11 +93,11 @@ Este comando inicia una shell con privilegios de root.
 
 ### 2. Permisos de Edición de Archivos Sensibles
 
-**Ejemplo:** El usuario puede editar cualquier archivo:
-
-```
-usuario ALL=(ALL) NOPASSWD: /usr/bin/vim
-```
+> [!example] Escenario
+> El usuario puede editar cualquier archivo usando vim:
+> ```
+> usuario ALL=(ALL) NOPASSWD: /usr/bin/vim
+> ```
 
 **Abuso:**
 ```bash
@@ -62,11 +110,11 @@ sudo vim /etc/passwd
 
 ### 3. Wildcards en la Configuración
 
-**Ejemplo:** Configuración con wildcards:
-
-```
-usuario ALL=(ALL) NOPASSWD: /bin/chown * /home/usuario/archivo
-```
+> [!example] Escenario
+> Configuración con wildcards:
+> ```
+> usuario ALL=(ALL) NOPASSWD: /bin/chown * /home/usuario/archivo
+> ```
 
 **Abuso:**
 ```bash
@@ -76,11 +124,11 @@ sudo chown root --reference=/etc/passwd /home/usuario/archivo
 
 ### 4. Comandos que Pueden Lanzar Shells
 
-**Ejemplo:** Usuario con permiso para usar programas que pueden lanzar shells:
-
-```
-usuario ALL=(ALL) NOPASSWD: /usr/bin/python
-```
+> [!example] Escenario
+> Usuario con permiso para usar programas que pueden lanzar shells:
+> ```
+> usuario ALL=(ALL) NOPASSWD: /usr/bin/python
+> ```
 
 **Abuso:**
 ```bash
@@ -90,11 +138,11 @@ sudo python -c 'import os; os.system("/bin/bash")'
 
 ### 5. Permisos de Sudo sin Contraseña
 
-**Ejemplo:** Configuración NOPASSWD para todos los comandos:
-
-```
-usuario ALL=(ALL) NOPASSWD: ALL
-```
+> [!example] Escenario
+> Configuración NOPASSWD para todos los comandos:
+> ```
+> usuario ALL=(ALL) NOPASSWD: ALL
+> ```
 
 **Abuso:**
 ```bash
@@ -102,15 +150,15 @@ usuario ALL=(ALL) NOPASSWD: ALL
 sudo su -
 ```
 
-## Cómo Detectar y Prevenir estos Abusos
+## 🛡️ Cómo Detectar y Prevenir estos Abusos
 
-1. **Revisión Regular**: Auditar regularmente el archivo sudoers.
-2. **Principio de Privilegio Mínimo**: Otorgar solo los privilegios necesarios.
-3. **Evitar Wildcards**: No usar comodines en la configuración de sudo.
-4. **Monitoreo**: Implementar sistemas de monitoreo para detectar abusos.
-5. **Usar sudoreplay**: Para auditar las sesiones de sudo.
+- [ ] **Revisión Regular**: Auditar periódicamente el archivo sudoers
+- [ ] **Principio de Privilegio Mínimo**: Otorgar solo los privilegios necesarios
+- [ ] **Evitar Wildcards**: No usar comodines en la configuración de sudo
+- [ ] **Monitoreo**: Implementar sistemas de monitoreo para detectar abusos
+- [ ] **Usar sudoreplay**: Para auditar las sesiones de sudo
 
-## Comandos Útiles para Verificar Configuración
+## 🔧 Comandos Útiles para Verificación
 
 ```bash
 # Ver tus permisos sudo
@@ -123,13 +171,13 @@ visudo -c
 grep -r "ALL=(ALL)" /etc/sudoers /etc/sudoers.d/
 ```
 
-## Ejemplo Práctico de Escalada de Privilegios
+## 🎯 Ejemplo Práctico de Escalada de Privilegios
 
-Supongamos que tienes permisos para ejecutar un script como root:
-
-```
-usuario ALL=(ALL) NOPASSWD: /scripts/backup.sh
-```
+> [!danger] Escenario de alto riesgo
+> Supongamos que tienes permisos para ejecutar un script como root y además puedes modificarlo:
+> ```
+> usuario ALL=(ALL) NOPASSWD: /scripts/backup.sh
+> ```
 
 Si puedes editar este script, podrías:
 
@@ -144,8 +192,34 @@ sudo /scripts/backup.sh
 sudo su
 ```
 
-Recuerda: La seguridad del sistema depende de una configuración adecuada de sudo.
+## 📚 Referencias y Recursos
+
+> [!note] Recursos relacionados
+> - [[Escalada de Privilegios]]
+> - [[GTFOBins]]
+> - [[Abuso de priviliegios a nivel de SUDOERS]]
+> - [[Abuso de privilegios SUID]]
+> - [[Deteccion y explotacion de tareas Cron]]
+> - [[PATH Hijacking]]
 
 ---
+
+## Técnicas de escalada organizadas por tipo
+
+- ### 📝 Configuración
+  - [[Abuso de priviliegios a nivel de SUDOERS]]
+  - [[PATH Hijacking]]
+  - [[Hijacking de bibliotecas]]
+
+- ### 🕒 Programación
+  - [[Deteccion y explotacion de tareas Cron]]
+  
+- ### 🔐 Permisos especiales
+  - [[Abuso de privilegios SUID]]
+  - [[Capabilities]]
+
+---
+
+#seguridad #linux #sudo #escalada_privilegios #pentesting
 
 [[Escalada de Privilegios]]

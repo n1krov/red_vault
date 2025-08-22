@@ -1,3 +1,6 @@
+---
+Tema: "[[fundamento de servidores]]"
+---
 
 ## **1. ¿Qué es RAID?**
 RAID es una técnica que combina múltiples discos duros (HDD/SSD) en una única unidad lógica para mejorar el **rendimiento**, la **capacidad** y/o la **tolerancia a fallos**. Se usa en servidores, NAS y sistemas críticos.

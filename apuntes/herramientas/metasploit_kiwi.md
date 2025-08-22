@@ -1,7 +1,7 @@
 
 # 🐥 Kiwi - Mimikatz embebido en Meterpreter
 
-**Kiwi** es una extensión de Meterpreter que permite utilizar funcionalidades de [Mimikatz](./mimikatz.md) directamente desde una sesión de **Metasploit**, sin necesidad de subir binarios ni ejecutar herramientas externas.
+**Kiwi** es una extensión de Meterpreter que permite utilizar funcionalidades de [Mimikatz](mimikatz.md) directamente desde una sesión de **Metasploit**, sin necesidad de subir binarios ni ejecutar herramientas externas.
 
 ---
 
