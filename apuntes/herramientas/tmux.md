@@ -84,4 +84,4 @@ tmux new-session -s dev \; \
 ```
 
 
-[[herramientas]]
+[[apuntes/herramientas/herramientas]]

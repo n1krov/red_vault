@@ -65,4 +65,4 @@ meterpreter > kiwi_cmd sekurlsa::logonpasswords
 
 > 🛑 **Nota legal:** El uso de Kiwi está limitado a entornos controlados con consentimiento explícito. Utilizarlo sin autorización es ilegal.
 
-[[herramientas]]
+[[apuntes/herramientas/herramientas]]

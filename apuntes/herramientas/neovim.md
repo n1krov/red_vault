@@ -28,4 +28,4 @@ Puedes usar `&` para referenciar el texto que se va a sustituir
 
 
 ---
-[[herramientas]]
+[[apuntes/herramientas/herramientas]]

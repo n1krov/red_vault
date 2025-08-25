@@ -119,7 +119,7 @@ graph TD
 
 Usa DAVTest para identificar y corregir vulnerabilidades en servidores WebDAV antes de que los atacantes puedan explotarlas. ¡Mantén tus servidores seguros! 😊
 
-[[herramientas]]
+[[apuntes/herramientas/herramientas]]
 
 
 [[WebDAV - Enumeración y Explotación]]

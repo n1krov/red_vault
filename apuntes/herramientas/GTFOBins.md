@@ -12,4 +12,4 @@ GTFOBins es un [colaborativo](https://github.com/GTFOBins/GTFOBins.github.io/gr
 
 Si está buscando binarios de Windows, debe visitar [LOLBAS](https://lolbas-project.github.io/).
 
-[[herramientas]]
+[[apuntes/herramientas/herramientas]]

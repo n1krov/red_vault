@@ -174,4 +174,4 @@ wget -r -np -nH --cut-dirs=0 http://<IP>:8000/
 > 📌 _wget es una herramienta clave en cualquier pentest o entorno forense. Ligero, potente y automatizable._
 
 ---
-[[herramientas]]
+[[apuntes/herramientas/herramientas]]

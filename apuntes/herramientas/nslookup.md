@@ -56,4 +56,4 @@ curl https://dns.google/resolve?name=ejemplo.com  # DNS over HTTPS
 
 **📌 Nota:** Usa `nslookup /?` (Windows) o `man nslookup` (Linux/macOS) para ver todas las opciones.  
 
-[[herramientas]]
+[[apuntes/herramientas/herramientas]]

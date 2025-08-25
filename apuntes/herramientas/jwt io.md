@@ -3,4 +3,4 @@
 
 ---
 
-[[herramientas]]
+[[apuntes/herramientas/herramientas]]

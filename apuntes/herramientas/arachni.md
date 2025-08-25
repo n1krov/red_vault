@@ -12,4 +12,4 @@
 
 ---
 
-[[herramientas]]
+[[apuntes/herramientas/herramientas]]

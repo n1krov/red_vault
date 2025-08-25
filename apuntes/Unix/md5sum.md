@@ -103,4 +103,4 @@ Si necesitas mayor seguridad, considera usar:
 ---
 
 [[unix]]
-[[herramientas]]
+[[apuntes/herramientas/herramientas]]

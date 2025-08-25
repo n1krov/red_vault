@@ -113,5 +113,5 @@ sequenceDiagram
 
 Si buscas una herramienta rápida y sencilla para consultas DNS básicas, `host` es una excelente opción. Para tareas más avanzadas, `dig` es más adecuado.
 
-[[herramientas]]
+[[apuntes/herramientas/herramientas]]
 [[Ataques de Transferencia de Zona (AXFR)]]

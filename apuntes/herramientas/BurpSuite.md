@@ -6,4 +6,4 @@ sudo pacman -S burpsuite
 ```
 
 ---
-[[herramientas]]
+[[apuntes/herramientas/herramientas]]

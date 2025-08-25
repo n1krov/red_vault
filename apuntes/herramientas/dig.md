@@ -140,5 +140,5 @@ sequenceDiagram
 ¡Y eso es todo! Un apunte hermoso, claro y fácil de entender para tu Obsidian. 😊 Si necesitas más detalles o ajustes, no dudes en pedírmelo.
 `dig` es una herramienta esencial para cualquier persona que trabaje con DNS. Aprende a usarla bien y te será de gran ayuda para diagnosticar y resolver problemas de red.
 
-[[herramientas]]
+[[apuntes/herramientas/herramientas]]
 [[Ataques de Transferencia de Zona (AXFR)]]

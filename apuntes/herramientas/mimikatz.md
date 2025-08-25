@@ -55,4 +55,4 @@ Mimikatz es una herramienta poderosa que **debe usarse solo en entornos autoriza
 
 > ✅ Ideal para pentesters, red teams, análisis forense y laboratorios de seguridad.
 
-[[herramientas]]
+[[apuntes/herramientas/herramientas]]

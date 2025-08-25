@@ -7,4 +7,4 @@
 - **Recomendación**: Útil para reconocimiento pasivo.
 
 ---
-[[herramientas]]
+[[apuntes/herramientas/herramientas]]

@@ -130,5 +130,5 @@ sequenceDiagram
 
 Cadaver es una herramienta poderosa para gestionar y probar servidores WebDAV. Asegúrate de usarla de manera responsable y siempre con permiso del propietario del servidor.
 
-[[herramientas]]
+[[apuntes/herramientas/herramientas]]
 [[WebDAV - Enumeración y Explotación]]

@@ -1,5 +1,5 @@
 ---
-Tema: "[[herramientas]]"
+Tema: "[[apuntes/herramientas/herramientas]]"
 ---
 
 # Tareas Cron en Linux

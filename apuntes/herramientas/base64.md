@@ -49,4 +49,4 @@ echo "Mensaje largo" | base64 -w 0
 
 
 ----
-[[herramientas]]
+[[apuntes/herramientas/herramientas]]
