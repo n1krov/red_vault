@@ -21,7 +21,7 @@ Los permisos en sistemas Unix/Linux constituyen la primera línea de defensa con
 ```mermaid
 flowchart TD
     A[Identificar permisos incorrectos] --> B{¿Tipo de archivo?}
-    B -->|Archivo de sistema| C[/etc/passwd, /etc/shadow, etc.]
+    B -->|Archivo de sistema| C["/etc/passwd,/etc/shadow, etc"]
     B -->|Script ejecutado por root| D[Tareas cron, scripts de servicio]
     B -->|Binario| E[Verificar SUID/SGID]
     C --> F[Explotar permisos de escritura]
