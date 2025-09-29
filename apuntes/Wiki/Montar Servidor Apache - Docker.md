@@ -1,5 +1,5 @@
 ---
-Tema: "[[wiki]]"
+Tema: "[[apuntes/Wiki/wiki]]"
 ---
 # 🐳 Servidor Apache con Docker: Guía Rápida
 

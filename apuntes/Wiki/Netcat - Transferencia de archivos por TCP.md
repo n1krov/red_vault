@@ -86,4 +86,4 @@ nc ip_maquina_a 443
 
 ---
 
-[[wiki]]
+[[apuntes/Wiki/wiki]]

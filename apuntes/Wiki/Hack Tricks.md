@@ -6,4 +6,4 @@ ir al sitio web: [Hacktricks](https://book.hacktricks.wiki/en/index.html)
 
 ---
 
-[[wiki]]
+[[apuntes/Wiki/wiki]]

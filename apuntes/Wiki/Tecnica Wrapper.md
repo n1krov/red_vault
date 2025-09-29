@@ -1,5 +1,5 @@
 ---
-Tema: "[[wiki]]"
+Tema: "[[apuntes/Wiki/wiki]]"
 ---
 # 🔗 Técnica Wrapper en PHP
 

@@ -1,5 +1,5 @@
 ---
-Tema: "[[wiki]]"
+Tema: "[[apuntes/Wiki/wiki]]"
 ---
 # ⏰ Servicios y Timers de Systemd: Automatización de Tareas
 

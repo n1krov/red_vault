@@ -1,5 +1,5 @@
 ---
-Tema: "[[wiki]]"
+Tema: "[[apuntes/Wiki/wiki]]"
 ---
 # 🔄 Tratamiento de TTY: Mejorando la Shell Interactiva
 
