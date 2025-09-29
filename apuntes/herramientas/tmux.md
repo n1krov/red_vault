@@ -1,3 +1,7 @@
+---
+Tema: "[[apuntes/herramientas/herramientas|herramientas]]"
+---
+
 # 🔄 TMUX: Terminal MUltipleXer
 
 > [!info] ¿Qué es TMUX?
@@ -328,6 +332,3 @@ chmod +x pentest-setup.sh
 - [Cheat Sheet oficial de Tmux](https://tmuxcheatsheet.com/)
 - [Tmux Plugin Manager](https://github.com/tmux-plugins/tpm) para extender funcionalidades
 - [Oh My Tmux](https://github.com/gpakosz/.tmux) para una configuración preoptimizada
-
-> [!note] Relacionado
-> [[terminal-basics]] | [[linux-tools]] | [[pentesting-workflow]]
