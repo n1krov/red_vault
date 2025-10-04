@@ -63,3 +63,10 @@ si hacemos chmod u+x /mnt/root/bin/bash
 
 estariamos modificando el binario bash del host real poniendole permisos de ejecucion al usuario root
 
+
+
+----
+
+otro caso
+
+contenedor con la flag --pid=host
