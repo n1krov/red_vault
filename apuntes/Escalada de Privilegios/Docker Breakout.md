@@ -224,3 +224,4 @@ nos devuelve la consola interactiva
 
 
 ahi ya puedes hacer el [[Tratamiento de TTY]]
+
