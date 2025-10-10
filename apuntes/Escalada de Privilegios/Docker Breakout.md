@@ -225,3 +225,67 @@ nos devuelve la consola interactiva
 
 ahi ya puedes hacer el [[Tratamiento de TTY]]
 
+
+---
+
+otra forma de escapar del contenedor
+
+contexto. ves un servicio [[portainers]] corriendo en el host
+
+por si quieres crearlo
+
+```bash
+docker run -dit -p 8000:8000 -p 9000:9000 --name portainer --restart=allways -v /var/run/docker.sock:/var/run/docker.sock -v /docker/portainer/data:/data portainer/portainer-ce
+```
+
+en la maquina victima obviamente estaria en ese caso corriendo en el puerto 9000
+
+ojo, las nuevas versiones de portainers pide contraseña mas robusta pero si es una version vieja o sabes la contraseña
+puedes aprovechar el uso de fuerza bruta ya que las personas suelen gestionar mal sus contraseñas
+
+desde portainer puedes crear un contenedor que tenga -v /:/mnt/root y que te otorgue una consola interactiva tty
+
+---
+otra forma de escapar del contenedor :  abusando de la api de docker
+
+no existe /var/run/docker.sock
+tampoco existe --pid=host ni --privileged
+
+la api opera por el puerto 2375 http o 2376 https (tls)
+
+ ojo alguien tuvo que haber configurado el uso de las api de docker, para verificar eso puedes usar [[netstat]]
+netstat -nat
+
+si quieres simularlo puedes habilitar la api de docker aqui
+	[[Docker - Habilitar la TCP puerto 2765]]
+	una vez habilitado le das
+	docker run -dit --name nombre imagen
+	docker exec -it nombre bash
+
+
+si te encuentras en este contexto, dentro del contenedor y quieres escaparlo y tienes [[jq]] o [[curl]] o ambos
+
+en cualquier caso se sabe que si tu ip por ejemplo
+
+```bash
+$ hostname -I
+192.17.0.2
+```
+
+tu ip del host es
+```bash
+192.17.0.1
+```
+
+en este caso es interesante buscar por si en el host esta abierto el puerto 2375
+
+```bash
+echo "" > /dev/tcp/197.17.0.1/2375
+```
+
+podrias printear el codigo de estado 
+```bash
+echo $? 
+```
+si devuelve 0 esta abierto
+
