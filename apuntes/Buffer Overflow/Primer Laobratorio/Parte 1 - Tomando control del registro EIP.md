@@ -1,7 +1,6 @@
 ---
 Tema: "[[Buffer Overflow]]"
 ---
-
 Embellecé y organizá mis apuntes de hacking en Obsidian usando Markdown (encabezados, listas, callouts, tablas, mermaid, bloques de código).  
 Simplificá lo confuso, agregá ejemplos de comandos/técnicas.  
 Respetá enlaces e imágenes.  
@@ -180,7 +179,4 @@ if __name__ == '__main__':
         exit(1)
 ```
 
-y si ahora ejecutamos el script veremos que el registro EIP se llena de 42424242 que es la representacion en hexadecimal de la letra B
-
-
-
+y si ahora ejecutamos el script veremos que el registro EIP se llena de 42424242 que es la representacion en hexadecimal de la letra B 

