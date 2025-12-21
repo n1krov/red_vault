@@ -96,6 +96,7 @@ nos devuelve los modulos como estos. los cuales cada modulo es un `.exe` o un `.
 si miramos hay un .dll que es de slmail de nuestro laboratorio. que tiene las columnas rebase safeSEH, ASLR, NXcompat en falso lo cual no cuenta con esas protecciones (l auiltima columna dice si es OS DLL el cual este tiene en true porque es un dll)
 
 ![[Pasted image 20251221182032.png]]
+Elegimos el modulo SLMFC.DLL
 
 Para que necesitamos un modulo de estos?
 
@@ -119,5 +120,35 @@ te va  devolver algo como esto
 ahora con Mona la idea es buscar en el archivo si encuentra ese OpCode (Operation Code)
 
 ```sh
-!mona find -s "/0xFF/0xE4" -m 
+!mona find -s "/0xFF/0xE4" -m SLMFC.DLL
+```
 
+-s Patron que quiero buscar
+-m modulo donde voy a buscar ese patron
+
+nota que sale algo como esto;:
+
+![[Pasted image 20251221183600.png]]
+debes tener en cuenta que encontro varias veces el patron de salto al ESP
+- Debes elegir uno que no contenga los badchars que encontramos anteriormente
+
+por ejemplo el ultimo no contiene los badchars ya que es `0x5f4c4d13`
+![[Pasted image 20251221183728.png]]
+
+
+por lo que esa direccion `0x5f4c4d13` es una direccion de salto al ESP que es el registro que contiene la direccion de la pila en memoria
+
+
+por lo que `0x5f4c4d13` debe ir en el script en la parte de eip 
+
+```python
+offset = 2606
+before_eip = b"A" * 2606
+eip = 0x5f4c4d13
+```
+pero esto esta mal porque como es una direccion y estamos en 32 bits debe estar al reves. Eso lo hacemos aplicando [[BOF - Little Endian]]
+
+> Ojo, en OpCodes no, es decir para buscar el opcode no se necesita. Little endian es para el procesamiento
+
+
+por lo que debemos importar una libreria `pack`
