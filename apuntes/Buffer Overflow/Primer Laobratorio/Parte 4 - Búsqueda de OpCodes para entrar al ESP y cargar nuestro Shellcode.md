@@ -97,3 +97,27 @@ si miramos hay un .dll que es de slmail de nuestro laboratorio. que tiene las co
 
 ![[Pasted image 20251221182032.png]]
 
+Para que necesitamos un modulo de estos?
+
+porque vamos a usarlo para ver si aplica una instruccion de JMP para asi poder usarlo y hacer que el EIP apunte a la direccion del modulo.
+
+pero primero necesitamos saber como es el OpCode y para eso podemos usar el siguiente comando de metasploit
+
+```sh
+/usr/share/metasploit-framework/tools/exploit/nasm-shell.rb
+```
+y luego escribimmos `jmp ESP`
+te va  devolver algo como esto
+
+```txt
+08080800    FFE4        jmp esp
+```
+
+> /0xFF y /0xE4 esto no es una direccion como tal por lo que no tiene que estar en [[BOF - Little Endian]]
+
+
+ahora con Mona la idea es buscar en el archivo si encuentra ese OpCode (Operation Code)
+
+```sh
+!mona find -s "/0xFF/0xE4" -m 
+
