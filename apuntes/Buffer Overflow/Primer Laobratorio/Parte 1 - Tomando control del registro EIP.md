@@ -180,3 +180,5 @@ if __name__ == '__main__':
 ```
 
 y si ahora ejecutamos el script veremos que el registro EIP se llena de 42424242 que es la representacion en hexadecimal de la letra B 
+
+para continuar con el laboratorio, seguimos en la [[Parte 2 - Asignacion de espacio para el SHELLCODE]]

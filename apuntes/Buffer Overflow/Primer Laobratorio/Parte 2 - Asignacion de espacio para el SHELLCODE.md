@@ -23,3 +23,5 @@ la idea con esto es hacer que el EIP apunte a una direccion que contenga un JMP 
 
 problema: no todos los caracteres son interpretados correctamente por el programa vulnerable, algunos pueden ser filtrados o modificados, lo que puede impedir que el shellcode se ejecute correctamente. estos se conocen como "bad chars" y para cada programa pueden variar, por lo que se debe realizar un analisis para identificarlos como fuzzing.
 
+para definir eso se continua en
+[[Parte 3 - Generacion de Bytearrays y deteccion de Badchars]]

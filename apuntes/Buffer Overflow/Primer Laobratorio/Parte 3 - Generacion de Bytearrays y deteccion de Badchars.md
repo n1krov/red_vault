@@ -91,4 +91,4 @@ y se sigue haciendo esto hasta que verifiques que estan todos  los bytearrays o 
 
 esto se hace para usar luego [[msfvenom]] (de la suite de metasploit) para generear el shellcode con los bytearrays correctos
 
-
+se continua en [[Parte 4 - Búsqueda de OpCodes para entrar al ESP y cargar nuestro Shellcode]]

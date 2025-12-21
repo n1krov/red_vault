@@ -192,7 +192,4 @@ if __name__ == '__main__':
         
 ```
 
-pero falta algo ya que esto asi no lo va a interpretar.
-
-y esto es porque
-- el shellcode es muy complejo y amplio
+este codigo asi no funcionara como tal porque hay cuestiones que se trataran en la [[Parte 5 - Uso de NOPs y Desplazamiento de la Pila para interpretar el RCE]]
