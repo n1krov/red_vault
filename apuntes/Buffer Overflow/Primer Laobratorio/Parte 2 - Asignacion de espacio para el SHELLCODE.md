@@ -19,7 +19,7 @@ el ESP apunta a la direccion actual de la "pila" donde estan los datos que hemos
 
 la pila como tal es una estructura de datos LIFO (Last In First Out) que se utiliza para almacenar datos temporales, direcciones de retorno y variables locales durante la ejecución de un programa.
 
-la idea con esto es hacer que el EIP apunte a una direccion que contenga un JMP (instruccion de salto) al ESP 
+la idea con esto es hacer que el EIP apunte a una direccion que contenga un JMP (instruccion de salto) al ESP
 
 problema: no todos los caracteres son interpretados correctamente por el programa vulnerable, algunos pueden ser filtrados o modificados, lo que puede impedir que el shellcode se ejecute correctamente. estos se conocen como "bad chars" y para cada programa pueden variar, por lo que se debe realizar un analisis para identificarlos como fuzzing.
 
