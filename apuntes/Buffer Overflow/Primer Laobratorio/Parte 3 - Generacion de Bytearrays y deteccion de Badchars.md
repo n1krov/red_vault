@@ -9,7 +9,7 @@ la idea es generar un bytearray con el objetivo de ir descartando aquellos que e
 
 la idea es correr el bytearray en la pila y ver que caracteer no sale representado en ella. y cuando falte uno significa que ese es badchar, poruqe luego el programa se rompe y hay que reiniciar de nuevo por eso hay que iterar cada vez que el programa se encuentre con un badchar hay que regenerear el bytearray
 
-crear un byte array con inmunity debugger y [[mona python]]
+crear un byte array con inmunity debugger y [[mona (python)]]
 
 en [[Inmunnity Debugger]] con mona.py puedes crearlo de la siguiente manera
 
