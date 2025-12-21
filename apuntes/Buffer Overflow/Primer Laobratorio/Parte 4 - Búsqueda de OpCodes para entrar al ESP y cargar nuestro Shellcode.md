@@ -148,7 +148,7 @@ eip = 0x5f4c4d13
 ```
 pero esto esta mal porque como es una direccion y estamos en 32 bits debe estar al reves. Eso lo hacemos aplicando [[BOF - Little Endian]]
 
-> Ojo, en OpCodes no, es decir para buscar el opcode no se necesita. Little endian es para el procesamiento
+> Ojo, en OpCodes no, es decir para buscar el opcode no se necesita. Little endian es para las direcciones
 
 
 por lo que debemos importar una libreria `pack` de `struct` quedando el codigo asi

