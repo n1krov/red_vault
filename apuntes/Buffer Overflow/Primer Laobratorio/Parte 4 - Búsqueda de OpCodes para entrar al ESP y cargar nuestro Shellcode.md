@@ -86,3 +86,14 @@ if __name__ == '__main__':
 ahora el tema de buscar el OpCode para saltar al ESP
 
 en [[mona (python)]] 
+
+`!mona modules`
+
+nos devuelve los modulos como estos. los cuales cada modulo es un `.exe` o un `.dll`
+
+![[Pasted image 20251221181930.png]]
+
+si miramos hay un .dll que es de slmail de nuestro laboratorio. que tiene las columnas rebase safeSEH, ASLR, NXcompat en falso lo cual no cuenta con esas protecciones (l auiltima columna dice si es OS DLL el cual este tiene en true porque es un dll)
+
+![[Pasted image 20251221182032.png]]
+
