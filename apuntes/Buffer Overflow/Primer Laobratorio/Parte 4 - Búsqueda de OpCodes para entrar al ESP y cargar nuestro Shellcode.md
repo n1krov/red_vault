@@ -192,4 +192,7 @@ if __name__ == '__main__':
         
 ```
 
-pero falta algo ya que este
+pero falta algo ya que esto asi no lo va a interpretar.
+
+y esto es porque
+- el shellcode es muy complejo y amplio
