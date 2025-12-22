@@ -45,7 +45,7 @@ Una vez filtrados los **bad characters**, necesitamos generar un **shellcode mal
 > 
 > **Shikata Ga Nai** (しかたがない) significa en japonés "no hay remedio" o "no se puede evitar". 
 > 
-> Es un **[[encoder]] polimórfico** que: 
+> Es un **[[Encoder]] polimórfico** que: 
 > - 🔄 **Ofusca el shellcode** usando XOR y operaciones aleatorias
 > - 🎲 **Genera código único** en cada ejecución
 > - 🛡️ **Evade firmas estáticas** de antivirus tradicionales
