@@ -81,7 +81,7 @@ flowchart TD
 
 ---
 
-#### 3️⃣ Deshabilitar Firewall de Windows
+#### 3️⃣ [[Deshabilitar DEP en Windows 7]]
 
 El firewall puede bloquear conexiones entrantes necesarias para las pruebas.
 
