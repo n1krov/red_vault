@@ -31,7 +31,7 @@ aplicar `GET / HTTP/1.1` + enter + enter
 eso se programara en el script
 
 
-### Fase Fuzzing
+## Fase Fuzzing
 
 
 
