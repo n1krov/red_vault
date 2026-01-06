@@ -1,3 +1,6 @@
+---
+Tema: "[[Buffer Overflow]]"
+---
 
 Embellecé y organizá mis apuntes de hacking en Obsidian usando Markdown (encabezados, listas, callouts, tablas, mermaid, bloques de código).  
 Simplificá lo confuso, agregá ejemplos de comandos/técnicas. 
@@ -8,3 +11,7 @@ Objetivo: notas claras, técnicas y atractivas.
 Aqui va el texto:
 
 ---
+
+## Inicio
+
+se va a trabajar sobre 
