@@ -14,4 +14,25 @@ Aqui va el texto:
 
 ## Inicio
 
-se va a trabajar sobre 
+se va a trabajar sobre [MiniShare](https://sourceforge.net/projects/minishare/) explotaremos eso, tiene vulnerabilidad de buffer obverflow
+
+minishare te va a dar un servicio http por el puerto 80
+
+algo que necesitamos es que ademas este habilitado el uso de [[telnet]] para poder trabajar sobre el script de pyhton
+
+para eso en telnet te conectas de la siguiente manera
+
+```sh
+telnet <ip> <puerto>
+```
+
+aplicar `GET / HTTP/1.1` + enter + enter
+
+eso se programara en el script
+
+
+### Fase Fuzzing
+
+
+
+
