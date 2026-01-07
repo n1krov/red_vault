@@ -49,4 +49,16 @@ eso lo podemos ahcer generando un payload con una lib de metasploit.
 /usr/share/metasploit-framework/tools/exploit/pattern-create.rb -l 1800
 ```
 
-te va a devolver un 
+te va a devolver bytes en hexadecimal con un patron especifico para que puedas detectar en que momento esta el limite del registro EIP.
+
+en este caso se puede ver en el momento donde se rompe
+
+![[Pasted image 20260107104952.png]]
+
+en ese caso es `0x36684335`
+
+por lo que buscamos la longitud con 
+
+```sh
+/usr/share/metasploit-framework/tools/exploit/pattern-
+```
