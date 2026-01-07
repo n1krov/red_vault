@@ -46,5 +46,7 @@ ahora para saber donde esta realmente el limite del registro EIP recordar qeu de
 
 eso lo podemos ahcer generando un payload con una lib de metasploit. 
 ```sh
-
+/usr/share/metasploit-framework/tools/exploit/pattern-create.rb -l 1800
 ```
+
+te va a devolver un 
