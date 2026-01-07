@@ -1,8 +1,6 @@
-
-**# telnet
-
 ---
-
+Tema: "[[apuntes/herramientas/herramientas|herramientas]]"
+---
 ## 📌 Introducción
 
 **Telnet** (Telecommunication Network) es un protocolo de red y herramienta de línea de comandos que permite establecer conexiones remotas a otros dispositivos mediante el protocolo TCP.  Fue uno de los primeros protocolos de Internet, desarrollado en 1969.
