@@ -37,3 +37,4 @@ alcarar qeu el bof ocurre en este punto:
 -  `GET AAAAAAA... HTTP/1.1`
 
 por lo que se empieza por descubrir donde estan los registros el `EIP` y el `ESP`
+
