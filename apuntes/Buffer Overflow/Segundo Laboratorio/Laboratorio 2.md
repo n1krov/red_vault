@@ -70,5 +70,9 @@ si quieres probar que llegaste corretamente puedes hacer
 ```python
 offset = 1787
 before_eip = b'A'*offset
-registro_eip= before_eip + b'B'
+eip= b'B'*4
+
+payload = before_eip + eip
 ```
+
+## Fase Badchars
