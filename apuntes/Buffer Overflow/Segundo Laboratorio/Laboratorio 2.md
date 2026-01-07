@@ -76,3 +76,15 @@ payload = before_eip + eip
 ```
 
 ## Fase Badchars
+
+En este caso el EIP esta al lado del ESP. por lo que ya podemos empezar con los badchars.
+en este caso lo haremos desde [[Inmunnity Debugger]] con [[mona (python)]]
+
+```python
+!mona bytearray -cpb "\x00"
+```
+
+> recordar qeu este crea todas las configuraciones de \x _ _, es decir, de la \x00 a \xff
+
+luego eso va a quedar en una carpeta definida en un .txt. quedaria tranferirse de alguna forma ese archivo a la mquina atacante, en el lab se lo hace por [[SMB - Transferencia de archivos por SMB]]
+
