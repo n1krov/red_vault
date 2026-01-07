@@ -3,7 +3,8 @@ Tema: "[[wiki]]"
 ---
 # 🖥️ Arquitectura x86_64
 
----
+
+![[Pasted image 20260107094825.png]]
 
 ## 📝 Definición
 
