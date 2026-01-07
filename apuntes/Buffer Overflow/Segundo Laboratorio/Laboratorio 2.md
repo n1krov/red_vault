@@ -37,4 +37,14 @@ alcarar qeu el bof ocurre en este punto:
 -  `GET AAAAAAA... HTTP/1.1`
 
 por lo que se empieza por descubrir donde estan los registros el `EIP` y el `ESP`
+eso recordar el scritp se va a encontrar en `red_vault/scripts/buffer_overflow/lab2_MiniShare.py`
 
+el servicio http explota cuando se le envian 1800 A (`\x41`)
+
+
+ahora para saber donde esta realmente el limite del registro EIP recordar qeu debemos insertar un payload con un patron especifico para encontrar el limite con la ayuda de [[Inmunnity Debugger]]
+
+eso lo podemos ahcer generando un payload con una lib de metasploit. 
+```sh
+
+```
