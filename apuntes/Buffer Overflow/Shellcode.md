@@ -59,3 +59,6 @@ tiene 1 poruqe queremos representar por pantalla en el stdout
 el texto
 la cantidad de bytes que ocupa la cadena hola mundo + el salto de linea
 
+se aplica tambien el uso del [[Lenguaje Ensamblador]]
+
+voy a dejar aca pero va a esar el asm tambien en `red_vault/scripts/`
