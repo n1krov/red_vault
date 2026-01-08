@@ -85,4 +85,7 @@ numeros:    bytes bytes bytes bytes    instruccion   instruccion
 
 lo importante son los bytes que estan en el medio que es lo qeu vamos a necesitar
 
-se lo pue
+se lo puede obtener de la siguiente manera
+```sh
+objdump -d final | 
+```
