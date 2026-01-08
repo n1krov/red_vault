@@ -83,7 +83,7 @@ muestra algo como esto {explicar}
 numeros:    bytes bytes bytes bytes    instruccion   instruccion
 
 
-lo importante son los bytes que estan en el medio que es lo qeu vamos a necesitar
+lo importante son los bytes que estan en el medio que es lo qeu vamos a necesitar lo vamos a obtener usando [[grep]] [[cut]] [[tr]] 
 
 se lo puede obtener de la siguiente manera
 ```sh
@@ -93,5 +93,6 @@ objdump -d final | grep "^ " | cut -f2 | tr -d ' ' | tr -d '\n'; echo
 ahora por cadenas de 2 meter un `\x`  (esto contiene posibles nullbytes o badchars)
 
 ```sh
-objdump -d final | grep "^ " | cut -f2 | tr -d ' ' | tr -d '\n' | sed 's/.{2\}//'
+printf '\\x' && objdump -d final | grep "^ " | cut -f2 | tr -d ' ' | tr -d '\n' | sed 's/.{2\}/&\\x/g' | head -c-3 | tr -d ' '; echo
 ```
+
