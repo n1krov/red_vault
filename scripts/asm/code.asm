@@ -17,3 +17,10 @@ _start:
 
 
     int 0x80    ; llamada al sistema
+
+    ; -- salir del programa
+    
+    mov eax, 1  ; llamada al sistema de salidaa
+    mov ebx, 0 ; código de salida 0
+
+    int 0x80    ; llamada al sistema

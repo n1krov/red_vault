@@ -83,7 +83,7 @@ muestra algo como esto {explicar}
 numeros:    bytes bytes bytes bytes    instruccion   instruccion
 
 
-lo importante son los bytes que estan en el medio que es lo qeu vamos a necesitar lo vamos a obtener usando [[grep]] [[cut]] [[tr]] 
+lo importante son los bytes que estan en el medio que es lo qeu vamos a necesitar lo vamos a obtener usando [[grep]] [[cut]] [[tr]] [[sed]]
 
 se lo puede obtener de la siguiente manera
 ```sh
