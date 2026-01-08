@@ -87,5 +87,11 @@ lo importante son los bytes que estan en el medio que es lo qeu vamos a necesita
 
 se lo puede obtener de la siguiente manera
 ```sh
-objdump -d final | 
+objdump -d final | grep "^ " | cut -f2 | tr -d ' ' | tr -d '\n'; echo 
+```
+
+ahora por cadenas de 2 meter un `\x`  (esto contiene posibles nullbytes o badchars)
+
+```sh
+objdump -d final | grep "^ " | cut -f2 | tr -d ' ' | tr -d '\n' | sed 's/.{2\}//'
 ```
