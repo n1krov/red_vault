@@ -15,3 +15,20 @@ Aqui va el texto:
 esto va de la mano con [[Arquitectura x86_64]]
 lo importante es que hay una instruccion que es la qeu se encarga de hacer las interrupciones el cual es -> `0x80`
 
+
+### Registros de lectura
+
+eax
+ebx
+ecx
+edx
+...
+
+como se aplica:
+- Cuando se aplique una interrupcion 80h, lo que va a hacer es leer a nivel de argumento(que tiene adentro) el registro eax, por lo que tienes que cargar ahi el tipo de lllamada que quieres hacer, en nuestro caso si queremos hacer un tipo write() es el 4
+y eso se hace de la siguiente manera
+
+```asm
+mov eax, 4
+```
+
