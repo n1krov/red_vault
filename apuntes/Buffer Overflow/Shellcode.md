@@ -32,10 +32,30 @@ Cuando te pase un texto de un concepto, transformalo en una **nota wiki estructu
 {definir facil y entendible que son los shellcodes}
 
 
+crear un binario con msfvenom
+```sh
+msfvenom -p linux/x86/exec CMD="echo 'hola mundo'" -f elf -o binary
+```
 
 para entender como funciona lo que se hace es utilizar [[msfvenom]] y [[disasm]]
 
 ```sh
 msfvenom -p linux/x86/exec CMD="echo 'hola mundo'" -f raw | disasm
 ```
+
+y usamos [[strace]] para ver las llamadas al sistma que usa
+
+```sh
+strace ./binary
+```
+
+todo esto hacemos para ver la llamada `write()`
+
+este pide 3 parametros
+
+`write(int fd, const void +buf, size_t count)`
+`write(1, "hola mundo\n",11)`
+tiene 1 poruqe queremos representar por pantalla en el stdout
+el texto
+la cantidad de bytes que ocupa la cadena hola mundo + el salto de linea
 
