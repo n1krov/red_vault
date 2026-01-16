@@ -36,6 +36,7 @@ Ejemplos
 2. **Basada en booleanos** *(boolean based blind injections)*:
    Usa expresiones booleanas para obtener respuestas sí/no y deducir información. **ideal para cuando se va a ciegas (url sanitizada o no se muestra informacion etc.)** 
 - Ejemplo
+
 > select(select ascii(substring(firstname,1,1)) from scientist where id=1)=97;
 > devuelve 1 o 0 dependiendo si es verdadero o falso respectivamente.
 
@@ -70,5 +71,5 @@ Ejemplos
 - **MySQL Online (ExtendsClass)**: [https://extendsclass.com/mysql-online.html](https://extendsclass.com/mysql-online.html)  
 
 
----
+
 [[OWASP]]
