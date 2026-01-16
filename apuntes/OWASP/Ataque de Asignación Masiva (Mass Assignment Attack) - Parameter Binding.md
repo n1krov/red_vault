@@ -1,3 +1,17 @@
+---
+Tema: "[[OWASP]]"
+---
+
+Embellecé y organizá mis apuntes de hacking en Obsidian usando Markdown (encabezados, listas, callouts, tablas, mermaid, bloques de código).  
+Simplificá lo confuso, agregá ejemplos de comandos/técnicas. 
+lo que este encerrado entre {indicaciones para LLM} son indicaciones para ti sobre lo que tienes que hacer en ese punto.
+Respetá  OBLIGATORIAMENTE enlaces e imágenes.  
+Objetivo: notas claras, técnicas y atractivas.  
+
+Aqui va el texto:
+
+---
+
 ### **¿Qué es un Ataque de Asignación Masiva?**
 
 Es un tipo de ataque en el que un atacante **manipula los parámetros de una solicitud** (por ejemplo, en un formulario web o una API) para asignar valores no autorizados a atributos de un objeto en el servidor. Esto puede permitir al atacante **modificar datos sensibles** o **elevar privilegios**.
