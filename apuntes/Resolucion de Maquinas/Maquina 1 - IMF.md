@@ -70,5 +70,18 @@ nmap -p- --open -sS -vvv --min-rate 5000 -n -Pn (ip) -oG allPorts
 luego el descubrimiento de servicios abiertos en esos puertos, en este caso el puerto 80 que fue el unico quie encontro
 
 ```sh
- nmap -sCV -p80 (ip)
+ nmap -sCV -p80 (ip) -oN targeted
 ```
+
+
+tambien 
+
+`whatweb http://(ip)`
+
+```java
+ip[200 OK] Apache[2.4.18], Bootstrap, Country[RESERVED][ZZ], HTML5, HTTPServer[Ubuntu Linux][Apache/2.4.18 (Ubuntu)], IP[192.168.100.48], JQuery[1.10.2], Modernizr[2.6.2.min], Script, Title[IMF - Homepage], X-UA-Compatible[IE=edge]
+```
+
+puedes buscar en internet por `Apache/2.4.18 launchpad`
+
+ubuntu xenial
