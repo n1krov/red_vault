@@ -41,3 +41,34 @@ Transformar el texto o tema que te indique en un **manual técnico de cibersegur
 
 ---
 
+# fase reconocimiento
+
+
+## en la red
+
+
+
+usamos [[arp-scan]]
+
+```sh
+sudo arp-scan -I wlan0 --localnet --ignoredups
+```
+
+nos da una ip a identificar 
+
+por cuestiones de que no tiene permiso de lectura a los archivos de mac vendor tuve que hacerlo en /tmp, igual medio poronga la verdad pq tira todo unknown
+## en el host
+
+
+una vez identificada la ip 
+
+reconocimiento de puertos
+```sh
+nmap -p- --open -sS -vvv --min-rate 5000 -n -Pn (ip) -oG allPorts
+```
+
+luego el descubrimiento de servicios abiertos en esos puertos, en este caso el puerto 80 que fue el unico quie encontro
+
+```sh
+ nmap -sCV -p80 (ip)
+```
