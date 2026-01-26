@@ -9,3 +9,4 @@
 8. [[criptografia_seguridad en redes]]
 9. [[OWASP]]
 10. [[Escalada de Privilegios]]
+11. [[resolucion de maquinas]]
