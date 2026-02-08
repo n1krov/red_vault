@@ -85,3 +85,8 @@ ip[200 OK] Apache[2.4.18], Bootstrap, Country[RESERVED][ZZ], HTML5, HTTPServer[U
 puedes buscar en internet por `Apache/2.4.18 launchpad`
 
 ubuntu xenial
+
+
+lo importante son los ataques sql aca
+enumeracion de la BD
+
