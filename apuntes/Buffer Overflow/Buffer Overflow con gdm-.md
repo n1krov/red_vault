@@ -31,4 +31,16 @@ Cuando te pase un texto de un concepto, transformalo en una **nota wiki estructu
 aca explico un ejemplo de buffer overflow
 
 una maquina IMF de nombre. la de impossible mission force
-una vez que tomas el control. tiene un binario corriendo y esta por el puerto 
+
+una vez que tomas el control. tiene un binario corriendo y esta por el puerto 7788 con  `netstat -nat`
+
+si estas en la maquina victima y ejecutasv `nc localhost 7788` 
+
+te lleva a la interfaz imf, ahora con [[Ghidra]] para con ingenieria inversa obterner el agent id con el que se compara en el codigo poruqe te pide como un acceso
+
+el cual es `48093572`
+
+si sigues el flujo del codigo que esta en c podras darte cuenta que hay una funcion utiliza la funcion `gets()` la cual no controla limites como `fgets()`
+
+el cual gets es potencialmente vector de BoF
+
