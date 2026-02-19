@@ -44,3 +44,8 @@ si sigues el flujo del codigo que esta en c podras darte cuenta que hay una func
 
 el cual gets es potencialmente vector de BoF
 
+bueno utilizando el [[gdb-peda]]
+debes pasarte el binario a la maquina atacante y ahi
+gdb ./binario -q 
+te abre el gdb-peda
+
