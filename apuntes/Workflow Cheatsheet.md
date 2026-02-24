@@ -18,3 +18,4 @@ independientemente si vemos tecnologias en un sistema o sus versiones tamien es 
 `searchsploit <tecnologia>`
 si encuentras una puedes hacer
 `searchsploit -x exploit`
+
