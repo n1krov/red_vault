@@ -23,3 +23,22 @@ si encuentras una puedes hacer
 
 ## Escalada de Privilegios
 
+generalmente si estas en un cms como wordpress en php existen archivos config que pueden por ahi mostrar credenciales
+
+```sh
+find -name \*config\* 2>/dev/null 
+```
+
+Busqueda de archivos con privilegios SUID
+```sh
+find / -perm -4000 2>/dev/null
+```
+
+
+util tambien catear el `.bash_history`
+
+tambien listar timers de crontabs
+
+```sh
+systemctl list-timers
+```
