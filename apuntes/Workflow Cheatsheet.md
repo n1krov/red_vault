@@ -19,3 +19,7 @@ independientemente si vemos tecnologias en un sistema o sus versiones tamien es 
 si encuentras una puedes hacer
 `searchsploit -x exploit`
 
+
+
+## Escalada de Privilegios
+
