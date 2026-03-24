@@ -1,6 +1,4 @@
 
----
-
 Un **proxy** es un intermediario entre tu dispositivo e internet.
 
 Cuando usas un proxy:
