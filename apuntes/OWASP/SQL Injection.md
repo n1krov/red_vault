@@ -1,7 +1,7 @@
 ---
 Tema: "[[OWASP]]"
 ---
-# 💉 SQL Injection (SQLi) - Cheat Sheet
+# SQL Injection (SQLi) - Cheat Sheet
 
 > [!danger] ¿Qué es una inyección SQL?
 > 
@@ -16,7 +16,7 @@ Tema: "[[OWASP]]"
 
 ---
 
-## 🛠️ La Caja de Herramientas (Funciones Clave)
+## La Caja de Herramientas (Funciones Clave)
 
 Antes de empezar a inyectar, estas son las funciones vitales que te van a permitir extraer datos, especialmente en ataques a ciegas (_Blind_).
 
@@ -29,7 +29,57 @@ Antes de empezar a inyectar, estas son las funciones vitales que te van a permit
 > - **`GROUP_CONCAT(columna)`**: Agrupa múltiples filas de resultados en una sola cadena separada por comas. Es magia pura para extraer toda una tabla en una sola petición.
 >     
 
-### 🔍 Identificar la Base de Datos Actual
+
+## Uso de ORDER BY
+
+Puede pasar que la web no muestre errores, pero si muestre cambios en la respuesta. Por ejemplo, si estamos en una vista de login y ponemos una inyección SQL, la web puede mostrar error o login exitoso. En este caso, podemos usar ORDER BY para determinar el número de columnas a la tabla que el programador dejó en el SELECT.
+
+#### La Regla de Oro del SQL
+
+Para que un atacante pueda usar un comando UNION (que sirve para robar datos de otras tablas), la consulta maliciosa debe tener el mismo número de columnas que la consulta original del programador.
+
+Si la consulta original pide 5 columnas y tú intentas unir 4, la base de datos da un error y el ataque falla.
+
+#### El "Tanteo" con ORDER BY
+
+El atacante empieza a probar números de forma secuencial. El servidor web responderá de dos formas distintas:
+
+    ORDER BY 1--: La página carga bien (existe al menos 1 columna).
+
+    ORDER BY 2--: La página carga bien (existen al menos 2 columnas).
+
+    ...
+
+    ORDER BY 7--: La página carga bien (existen al menos 7 columnas).
+
+    ORDER BY 8--: ¡ERROR! (o la página se ve distinta).
+
+En ese preciso momento, el atacante ya sabe: "La tabla original tiene exactamente 7 columnas".
+
+#### ¿Qué hace internamente la base de datos?
+
+Cuando tú pones ORDER BY 7, le estás diciendo al motor de SQL: "Ordena el resultado final basándote en lo que haya en la séptima columna de la lista del SELECT".
+
+Si el programador escribió:
+SELECT id, nombre, email, password FROM usuarios... (4 columnas)
+
+Y tú inyectas un ORDER BY 7, la base de datos se vuelve loca porque no existe una séptima columna para usar como criterio de orden y lanza una excepción. El atacante usa ese error como confirmación.
+
+#### ¿Cuál es el siguiente paso del atacante?
+
+Ahora que sabe que hay 7 columnas, el atacante dejará de usar el ORDER BY y pasará al UNION SELECT.
+
+Como ya conoce el número exacto, puede escribir una consulta que "encaje" perfectamente:
+
+```sql
+admin' UNION SELECT 1,2,3,4,5,6,7-- -
+```
+
+Esto le permite ver en qué parte de la pantalla aparecen esos números (1, 2, 3...) y luego reemplazar, por ejemplo, el número 5 por version() o user() para empezar a extraer información real del sistema.
+
+
+
+### Identificar la Base de Datos Actual
 
 Dependiendo del motor, el comando cambia:
 
@@ -41,13 +91,12 @@ Dependiendo del motor, el comando cambia:
 
 ---
 
-## 🗺️ Flujo de Trabajo Típico (Metodología)
+## Flujo de Trabajo Típico (Metodología)
 
 Cuando confirmás la vulnerabilidad, el camino hacia el volcado de datos (dump) siempre sigue este flujo lógico:
 
-Fragmento de código
 
-```
+```mermaid
 graph TD
     A[1. Conocer BD Actual] --> B[2. Enumerar TODAS las BDs]
     B --> C[3. Enumerar TABLAS de una BD objetivo]
@@ -145,7 +194,7 @@ payload = "admin' and if(substr((select group_concat(schema_name) from informati
 
 **Bucle de fuerza bruta (Script de ejemplo):**
 
-```Python
+```python
 import requests
 import time
 from pwn import *
@@ -177,9 +226,7 @@ for position in range(1, 100):
             break # Pasamos a la siguiente posición
 ```
 
----
-
-## 🛡️ Prevención (Para Blue Team)
+## Prevención (Para Blue Team)
 
 - **Consultas Preparadas (Prepared Statements):** Es la solución definitiva. Separa el código SQL de los datos proporcionados por el usuario.
     
@@ -190,5 +237,5 @@ for position in range(1, 100):
 
 ---
 
-**🔗 Recursos Adicionales:**
+**Recursos Adicionales:**
 - [MySQL Online (ExtendsClass) para practicar sintaxis](https://extendsclass.com/mysql-online.html)
