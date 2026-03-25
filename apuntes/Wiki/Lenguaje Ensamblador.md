@@ -2,97 +2,114 @@
 Tema: "[[wiki]]"
 ---
 
-Embellecé y organizá mis apuntes de hacking en Obsidian usando Markdown (encabezados, listas, callouts, tablas, mermaid, bloques de código).  
-Simplificá lo confuso, agregá ejemplos de comandos/técnicas. 
-lo que este encerrado entre {indicaciones para LLM} son indicaciones para ti sobre lo que tienes que hacer en ese punto.
-Respetá  OBLIGATORIAMENTE enlaces e imágenes.  
-Objetivo: notas claras, técnicas y atractivas.  
+## ⚙️ Lenguaje Ensamblador y Llamadas al Sistema (Syscalls)
 
-Aqui va el texto:
+Estos conceptos de bajo nivel van fuertemente ligados a la **[[Arquitectura x86_64]]**.  
+La base de la interacción con el kernel de Linux en ensamblador de 32 bits (x86) ocurre enviando la interrupción **`0x80`**.
 
 ---
 
-esto va de la mano con [[Arquitectura x86_64]]
-lo importante es que hay una instruccion que es la qeu se encarga de hacer las interrupciones el cual es -> `0x80`
+### 📚 Registros Principales (Lectura/Escritura)
 
+En la arquitectura x86, utilizamos varios registros Multipropósito de 32-bits que actúan como "variables" o contenedores a las que acede el procesador:
 
-### Registros de lectura
+- `EAX` (Acumulador)
+- `EBX` (Base)
+- `ECX` (Contador)
+- `EDX` (Datos)
+- `ESP` (Stack Pointer - Puntero de Pila)
 
-eax
-ebx
-ecx
-edx
-...
+> [!tip] ¿Cómo funcionan las llamadas al sistema?
+> Cuando ejecutas la interrupción `int 0x80`, el kernel lee qué hay exactamente dentro del registro `EAX` para saber **qué tipo de función** (syscall) quieres ejecutar.  
+> Por ejemplo, si queremos ejecutar la syscall `sys_write` (escribir en pantalla), su identificador es el `4`.
 
-como se aplica:
-- Cuando se aplique una interrupcion 80h, lo que va a hacer es leer a nivel de argumento(que tiene adentro) el registro eax, por lo que tienes que cargar ahi el tipo de lllamada que quieres hacer, en nuestro caso si queremos hacer un tipo write() es el 4
-y eso se hace de la siguiente manera
-
-```asm
-mov eax, 4
+Por lo tanto, la carga clásica se hace así:
+```nasm
+mov eax, 4  ; Le decimos al kernel que prepare una operación Write()
 ```
 
+---
 
-a continuacion un hola mundo en asm
+### 💻 Ejemplo Práctico: Hola Mundo en Ensamblador (x86)
 
-```asm
+El siguiente script define explícitamente y bloque por bloque cómo imprimir la cadena "Hola mundo\n" y luego salir limpiamente del programa.
+
+```nasm
 section .text
     global _start
+
 _start:
-    mov eax, 4  ; llamada al sistema de escritura
-    mov ebx, 1  ; stdout
-    ; esto va a estar en el tope de la pila, cabe aclarar que se escribe al revés dado que estamos trabajando con little-endian
-    ; little-endian porque es de arquitectura x86
-    push 0x0a6f64      ; "do\n"
-    push 0x6e756d20  ; " mun"
-    push 0x616c6f48  ; "Hola"
-    mov ecx, esp  ; puntero al mensaje, la direccion del esp la pasamos a ecx
-    mov edx, 11   ; longitud del mensaje
-    int 0x80    ; llamada al sistema
-    ; -- salir del programa
+    ; --- 1. PREPARACIÓN DE LA LLAMADA AL SISTEMA WRITE ---
+    mov eax, 4      ; Syscall #4: sys_write
+    mov ebx, 1      ; Descriptor de archivo (1 = STDOUT - Consola)
     
-    mov eax, 1  ; llamada al sistema de salidaa
-    mov ebx, 0 ; código de salida 0
-    int 0x80    ; llamada al sistema
+    ; --- 2. CARGA DEL MENSAJE EN LA PILA (Little-Endian) ---
+    ; Los strings se empujan (push) al stack de atrás hacia adelante
+    push 0x0a6f64    ; Push: "do\n"  (\n = 0x0a)
+    push 0x6e756d20  ; Push: " mun" (con espacio)
+    push 0x616c6f48  ; Push: "Hola"
+    
+    ; --- 3. PARAMETRIZACIÓN DEL PUNTERO Y LONGITUD ---
+    mov ecx, esp    ; El inicio del mensaje ahora está en ESP, lo pasamos a ECX
+    mov edx, 11     ; Longitud total del mensaje ("Hola mundo\n" = 11 bytes)
+    
+    ; --- 4. EJECUCIÓN ---
+    int 0x80        ; Llamar a la interrupción del kernel
+    
+    ; --- 5. SALIDA LIMPIA (Graceful Exit) ---
+    mov eax, 1      ; Syscall #1: sys_exit
+    mov ebx, 0      ; Código de retorno (0 = Éxito)
+    int 0x80        ; Llamar interrupción del kernel
 ```
 
-ahora utilizamos [[nasm]] para crear un archivo `.o` y de formato `elf` {que es elf??}
-```sh
-nasm -f elf code.asm
-```
+---
 
-ahora para representar el binario final utillzamos [[ld]]
+### 🛠️ Compilación y Enlazado (Building process)
 
-```sh
-ld -m elf_i386 -o final code.o
-```
+Para que el microprocesador pueda ejecutar este código necesitamos compilarlo con **[[nasm]]** a un formato de Objeto y enlazarlo con **[[ld]]**.
 
+> [!info] ¿Qué es el formato ELF?
+> **ELF** (Executable and Linkable Format) es el formato de archivo estándar para código ejecutable, bibliotecas compartidas (SO) y volcados de núcleo (core dumps) en sistemas tipo UNIX como Linux.
 
-adicionalmente se utiliza [[objdump]] para desensamblarlo
+1. **Ensamblado (Assembling):** Compila el código a archivo objeto tipo ELF 32 bits.
+   ```bash
+   nasm -f elf code.asm
+   ```
+2. **Enlazado (Linking):** Vincula para crear el binario final ejecutable (`final`).
+   ```bash
+   ld -m elf_i386 -o final code.o
+   ```
 
-```sh
+---
+
+### 🔍 Desensamblado y Extracción de Shellcode
+
+Una vez tenemos el binario final, podemos utilizar **[[objdump]]** para desensamblar y ver cómo quedó escrito el código a bajo nivel.
+
+```bash
 objdump -d final
 ```
 
-
-mostrandote esto
-
+Te devolverá una estructura visual similar a esto:
 ![[Pasted image 20260108100202.png]]
 
-muestra algo como esto {explicar}
-numeros:    bytes bytes bytes bytes    instruccion   instruccion
+> [!example] ¿Cómo leer el formato de objdump?
+> Las columnas representan lo siguiente:
+> `[Dirección de Memoria]` : `[Bytes Hexadecimales (Opcodes)]` -> `[Instrucción ASM (nemónico)]`
 
+Para el hacking (ej: creación de payloads/shellcodes), lo que realmente necesitamos son esos **bytes hexadecimales puros** que están en el medio.
 
-lo importante son los bytes que estan en el medio que es lo qeu vamos a necesitar lo vamos a obtener usando [[grep]] [[cut]] [[tr]] [[sed]]
+#### 🧲 Extracción Mágica (One-Liner)
 
-se lo puede obtener de la siguiente manera
-```sh
-objdump -d final | grep "^ " | cut -f2 | tr -d ' ' | tr -d '\n'; echo 
-```
+Esta línea de comando conjuga **[[grep]]**, **[[cut]]**, **[[tr]]** y **[[sed]]** para parsear la salida de `objdump` y aislar únicamente los Opcodes extra funcionales.
 
-ahora por cadenas de 2 meter un `\x`  (esto contiene posibles nullbytes o badchars)
+1. **Filtrar solo los Hex:**
+   ```bash
+   objdump -d final | grep "^ " | cut -f2 | tr -d ' ' | tr -d '\n'; echo 
+   ```
 
-```sh
-printf '\\x' && objdump -d final | grep "^ " | cut -f2 | tr -d ' ' | tr -d '\n' | sed 's/.{2\}/&\\x/g' | head -c-3 | tr -d ' '; echo
-```
-
+2. **Formateo para Shellcode (`\x`):**
+   ```bash
+   printf '\\x' && objdump -d final | grep "^ " | cut -f2 | tr -d ' ' | tr -d '\n' | sed 's/.{2\}/&\\x/g' | head -c-3 | tr -d ' '; echo
+   ```
+   *Nota: Recuerda siempre revisar este output en busca de **nullbytes** (`\x00`) o badchars conocidos si este shellcode se usará en exploits.*

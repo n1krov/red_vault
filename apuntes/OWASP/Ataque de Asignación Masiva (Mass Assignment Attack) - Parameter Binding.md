@@ -2,118 +2,76 @@
 Tema: "[[OWASP]]"
 ---
 
-Embellecé y organizá mis apuntes de hacking en Obsidian usando Markdown (encabezados, listas, callouts, tablas, mermaid, bloques de código).  
-Simplificá lo confuso, agregá ejemplos de comandos/técnicas. 
-lo que este encerrado entre {indicaciones para LLM} son indicaciones para ti sobre lo que tienes que hacer en ese punto.
-Respetá  OBLIGATORIAMENTE enlaces e imágenes.  
-Objetivo: notas claras, técnicas y atractivas.  
+## 🛑 Ataque de Asignación Masiva (Mass Assignment)
 
-Aqui va el texto:
+> [!danger] ¿Qué es un Ataque de Asignación Masiva?
+> Es un tipo de vulnerabilidad donde un atacante **manipula los parámetros de una solicitud** (por ejemplo, enviando campos adicionales en un JSON o formulario) para asignar valores no autorizados a atributos protegidos de un objeto en el servidor. Esto puede llevar a **modificar datos sensibles** o **elevar privilegios** de forma ilegítima.
 
----
+### ⚙️ ¿Cómo Funciona?
 
-### **¿Qué es un Ataque de Asignación Masiva?**
-
-Es un tipo de ataque en el que un atacante **manipula los parámetros de una solicitud** (por ejemplo, en un formulario web o una API) para asignar valores no autorizados a atributos de un objeto en el servidor. Esto puede permitir al atacante **modificar datos sensibles** o **elevar privilegios**.
-
----
-
-### **¿Cómo Funciona?**
-
-1. **Asignación Automática**:  
-   Muchos frameworks web (como Ruby on Rails, Django, Laravel, etc.) permiten la **asignación automática** de parámetros de solicitud a atributos de un objeto. Esto facilita el desarrollo, pero puede ser peligroso si no se controla adecuadamente.
-
-2. **Manipulación de Parámetros**:  
-   El atacante envía una solicitud con parámetros adicionales que no deberían ser modificables por el usuario. Por ejemplo, un parámetro `is_admin=true`.
-
-3. **Impacto**:  
-   Si el servidor no valida correctamente los parámetros, el atacante puede modificar atributos sensibles, como roles de usuario, contraseñas, o configuraciones.
+1. **La Asignación Automática (Parameter Binding):**  
+   Muchos frameworks modernos (Ruby on Rails, Django, Laravel, Spring) tienen la capacidad de mapear automáticamente los parámetros de una petición HTTP directamente a atributos de un objeto o modelo en la base de datos.
+2. **Inyección de Parámetros:**  
+   El atacante aprovecha esto e inyecta parámetros extras que la aplicación no esperaba recibir ni modificar. Ej: `is_admin=true`.
+3. **El Impacto:**  
+   Si el backend no tiene una lista estricta de variables permitidas, actualizará silenciosamente esos atributos críticos, desencadenando riesgos de seguridad.
 
 ---
 
-### **Ejemplo Práctico**
+### 💻 Ejemplo Práctico
 
-- **Escenario**: Una aplicación web permite a los usuarios registrarse mediante un formulario.
-- **Código Vulnerable**:
-  ```ruby
-  class User < ActiveRecord::Base
-    attr_accessible :username, :email, :password
-  end
-  ```
-  - Aquí, `attr_accessible` define qué atributos pueden ser asignados automáticamente.
+Imagina una aplicación web de registro y su correspondiente código backend en Ruby on Rails.
 
-- **Ataque**:  
-  El atacante envía una solicitud con un parámetro adicional `is_admin=true`:
-  ```json
-  {
-    "username": "hacker",
-    "email": "hacker@example.com",
-    "password": "password123",
-    "is_admin": true
-  }
-  ```
-  - Si el servidor no valida los parámetros, el atacante se convierte en administrador.
+**Código Vulnerable:**
+```ruby
+class User < ActiveRecord::Base
+  # attr_accessible permite asignación masiva. Si falta o está mal configurado, es vulnerable
+  attr_accessible :username, :email, :password
+end
+```
 
----
-
-### **¿Por qué es Peligroso?**
-
-- **Elevación de Privilegios**: El atacante puede asignarse roles administrativos.
-- **Manipulación de Datos**: Puede modificar datos sensibles, como contraseñas o configuraciones.
-- **Exposición de Información**: Puede acceder a información no autorizada.
+**El Ataque:**  
+Un usuario ordinario intercepta la petición lógica de registro y añade un campo extra `is_admin`:
+```json
+{
+  "username": "hacker",
+  "email": "hacker@example.com",
+  "password": "password123",
+  "is_admin": true
+}
+```
+> [!error] Resultado
+> Como el servidor no valida y descarta los campos adicionales, procesará toda la data y el atacante **nacerá como administrador** en la base de datos.
 
 ---
 
-### **¿Cómo Prevenir Ataques de Asignación Masiva?**
+### 🛡️ Medidas de Prevención y Mitigación
 
-1. **Listas Blancas**:  
-   Define explícitamente qué atributos pueden ser asignados automáticamente. Por ejemplo, en Ruby on Rails:
-   ```ruby
-   class User < ActiveRecord::Base
-     attr_accessible :username, :email, :password
-   end
-   ```
+Para proteger la aplicación contra estas inyecciones, se recomiendan las siguientes estrategias defensivas:
 
-2. **Listas Negras**:  
-   Define explícitamente qué atributos **no** pueden ser asignados automáticamente. Sin embargo, este enfoque es menos seguro que las listas blancas.
-
-3. **Validación de Parámetros**:  
-   Valida y sanitiza todos los parámetros de entrada antes de asignarlos a un objeto.
-
-4. **Uso de DTOs (Data Transfer Objects)**:  
-   Usa objetos específicos para transferir datos entre capas, limitando la exposición de atributos sensibles.
-
-5. **Configuración de Frameworks**:  
-   Asegúrate de que los frameworks estén configurados para evitar la asignación automática de parámetros no autorizados.
+- ✅ **Uso de Listas Blancas (Allow-listing):** Definir explícitamente y en el código QUÉ atributos pueden ser asignados automáticamente por el cliente. Todo lo que no esté en la lista, se descarta.
+- ✅ **Implementar DTOs (Data Transfer Objects):** Usar objetos intermedios para mapear las peticiones antes de pasarlas a la capa de base de datos.
+- ✅ **Parametrización Estricta:** Validar y sanitizar absolutamente todos los inputs.
+- ❌ **Evitar Listas Negras (Block-listing):** Predecir todos los campos que "no deberían" modificarse es insostenible en el tiempo, es mejor usar listas blancas.
 
 ---
 
-### **Resumen**
-
-- **Ataque de Asignación Masiva**: Manipulación de parámetros para asignar valores no autorizados a atributos de un objeto.
-- **Impacto**: Elevación de privilegios, manipulación de datos, exposición de información.
-- **Prevención**: Listas blancas, validación de parámetros, uso de DTOs, configuración segura de frameworks.
-
----
-
-### **Diagrama de Ataque de Asignación Masiva**
+### 📊 Diagrama de Flujo del Ataque
 
 ```mermaid
 sequenceDiagram
+    autonumber
     participant Atacante
     participant Aplicación
     participant BaseDeDatos
 
-    Atacante->>Aplicación: Envía solicitud con parámetros maliciosos
-    Aplicación->>BaseDeDatos: Asigna valores no autorizados
-    BaseDeDatos->>Aplicación: Datos modificados
-    Aplicación->>Atacante: Acceso no autorizado
+    Atacante->>Aplicación: Envía solicitud con parámetros maliciosos (is_admin=true)
+    Aplicación->>BaseDeDatos: Parameter Binding: Asigna y guarda valores no controlados
+    BaseDeDatos->>Aplicación: Confirma actualización de datos
+    Aplicación->>Atacante: Permite el acceso no autorizado
 ```
 
----
-
-### **Consejo Final**
-
-Nunca confíes en las entradas del usuario. Siempre valida y sanitiza los parámetros antes de asignarlos a un objeto, y usa listas blancas para limitar los atributos que pueden ser modificado
+> [!tip] Consejo de Oro
+>  **Nunca confíes en las entradas del usuario.** Siempre valida y sanitiza los parámetros antes de asignarlos, restringiendo firmemente qué propiedades pueden alterarse mediante asignación automática.
 
 [[OWASP]]
